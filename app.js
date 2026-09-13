@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const API_BASE = String(window.LOLA_API_BASE || (window.LOLA_CONFIG && window.LOLA_CONFIG.apiBase) || "https://the-lola-booth-admin-production.up.railway.app").replace(/\/$/, "");
+  const API_BASE = String(window.LOLA_API_BASE || (window.LOLA_CONFIG && window.LOLA_CONFIG.apiBase) || "https://api.thelolabooth.com").replace(/\/$/, "");
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const apiAsset=(p)=>!p?null:(/^https?:\/\//i.test(p)?p:(p.startsWith("/api/")?API_BASE+p:p));
   const money=(v,c="USD")=>{ if(v==null||v==="") return ""; if(String(v).toLowerCase().includes("request")) return String(v); const n=Number(v); return Number.isFinite(n)?new Intl.NumberFormat("en-US",{style:"currency",currency:c,maximumFractionDigits:n%1?2:0}).format(n):String(v); };
