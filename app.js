@@ -1,6 +1,6 @@
 (() => {
   "use strict";
-  const API_BASE = String(window.LOLA_API_BASE || (window.LOLA_CONFIG && window.LOLA_CONFIG.apiBase) || "https://api.thelolabooth.com").replace(/\/$/, "");
+  const API_BASE = String(window.LOLA_API_BASE || (window.LOLA_CONFIG && window.LOLA_CONFIG.apiBase) || "https://the-lola-booth-admin-production.up.railway.app").replace(/\/$/, "");
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const apiAsset=(p)=>!p?null:(/^https?:\/\//i.test(p)?p:(p.startsWith("/api/")?API_BASE+p:p));
   const money=(v,c="USD")=>{ if(v==null||v==="") return ""; if(String(v).toLowerCase().includes("request")) return String(v); const n=Number(v); return Number.isFinite(n)?new Intl.NumberFormat("en-US",{style:"currency",currency:c,maximumFractionDigits:n%1?2:0}).format(n):String(v); };
@@ -34,10 +34,14 @@
 
   function setSiteSettings(settings){
     if(!settings)return;
-    const email=settings.contact_email||settings.business_email;
+    const email=settings.contact_email;
+    const phone=String(settings.phone||'');
+    const serviceArea=String(settings.service_area||'');
+    const isSeedPhone=/555|010-LOLA/i.test(phone);
+    const isSeedService=/Dallas-Fort Worth/i.test(serviceArea);
     qsa('[data-site-email]').forEach(a=>{if(email){a.textContent=email;a.href=`mailto:${email}`;}});
-    qsa('[data-site-phone]').forEach(n=>{ if(settings.phone){ n.textContent=`Phone: ${settings.phone}`; n.classList.remove('footer-placeholder'); } });
-    qsa('[data-site-service-area]').forEach(n=>{ if(settings.service_area){ n.textContent=`Service area: ${settings.service_area}`; n.classList.remove('footer-placeholder'); } });
+    qsa('[data-site-phone]').forEach(n=>{ if(phone&&!isSeedPhone){ n.textContent=`Phone: ${phone}`; n.classList.remove('footer-placeholder'); } });
+    qsa('[data-site-service-area]').forEach(n=>{ if(serviceArea&&!isSeedService){ n.textContent=`Service area: ${serviceArea}`; n.classList.remove('footer-placeholder'); } });
     qsa('[data-brand-line]').forEach(n=>{if(settings.brand_line)n.textContent=settings.brand_line;});
     qsa('[data-site-copyright]').forEach(n=>{ n.textContent=settings.copyright_text||`© ${new Date().getFullYear()} ${settings.business_name||'The LOLA Booth'}. All rights reserved.`; });
     qsa('[data-site-socials]').forEach(el=>{
@@ -102,7 +106,7 @@
     for(const grid of qsa('[data-cms-events]')) grid.innerHTML=items.map(x=>`<a class="event-card" href="availability.html"><img src="${esc(apiAsset(x.image)||localEventImage(x.name))}" alt="${esc(x.name)}"><div class="label"><h3>${esc(x.name)}</h3><p>${esc(x.short_description||'Make it memorable with LOLA.')}</p></div></a>`).join('');
   }
   function renderGallery(items){ const grid=qs('[data-cms-gallery]'); if(!grid||!items?.length)return; grid.innerHTML=items.map(x=>`<img src="${esc(apiAsset(x.thumbnail||x.image))}" data-full="${esc(apiAsset(x.image)||'')}" alt="${esc(x.alt_text||x.caption||'LOLA event moment')}" loading="lazy">`).join(''); }
-  function renderTestimonials(items){ const grid=qs('[data-cms-testimonials]'); if(!grid||!items?.length)return; grid.innerHTML=items.slice(0,6).map(x=>`<div class="card testimonial"><p class="quote">“${esc(x.quote)}”</p><p class="muted">— ${esc(x.client_display_name||'LOLA client')}${x.event_type?`, ${esc(x.event_type)}`:''}</p></div>`).join(''); }
+  function renderTestimonials(items){ const grid=qs('[data-cms-testimonials]'); if(!grid)return; const section=grid.closest('[data-cms-testimonial-section]'); if(!items?.length){ if(section)section.hidden=true; grid.innerHTML=''; return; } if(section)section.hidden=false; grid.innerHTML=items.slice(0,6).map(x=>`<div class="card testimonial"><p class="quote">“${esc(x.quote)}”</p><p class="muted">— ${esc(x.client_display_name||'LOLA client')}${x.event_type?`, ${esc(x.event_type)}`:''}</p></div>`).join(''); }
   function renderFaqs(items){ const box=qs('[data-cms-faqs]'); if(!box||!items?.length)return; box.innerHTML=items.map(x=>`<details><summary>${esc(x.question)}</summary><p class="muted">${esc(x.answer)}</p></details>`).join(''); }
 
   function friendlyInquiryError(status,data){

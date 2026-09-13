@@ -3,13 +3,14 @@
 This package preserves the existing HTML/CSS/JS website design and connects it to the LOLA Admin public API.
 
 ## Local use
-1. Use the production LOLA API origin configured in `config.js`: `https://api.thelolabooth.com`.
+1. Use the production LOLA API origin configured in `config.js`. It is temporarily set to the working Railway origin until `https://api.thelolabooth.com` is live.
 2. Ensure the static site origin is listed in `PUBLIC_INQUIRY_ALLOWED_ORIGINS`.
 3. Serve this folder through a local HTTP server (do not open only as `file://` for form testing).
 4. `config.js` exposes only the public API origin through `window.LOLA_API_BASE` and `window.LOLA_CONFIG.apiBase`.
 
 ## Production
-Edit `config.js` and set `apiBase` to the deployed LOLA API origin, e.g. `https://api.example.com`.
+Current API base: `https://the-lola-booth-admin-production.up.railway.app`.
+After the Railway custom API domain is configured, update `config.js` to `https://api.thelolabooth.com`.
 Also set the website origin in backend `PUBLIC_INQUIRY_ALLOWED_ORIGINS`.
 
 ## Dynamic CMS integration
