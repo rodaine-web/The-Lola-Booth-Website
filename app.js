@@ -23,7 +23,14 @@
   }
   initHero();
 
-  function localExperienceImage(name){ const n=(name||'').toLowerCase(); if(n.includes('glam'))return 'assets/glam.jpg'; if(n.includes('360'))return 'assets/booth360.jpg'; if(n.includes('vogue'))return 'assets/vogue.jpg'; if(n.includes('audio'))return 'assets/audio.jpg'; if(n.includes('digital'))return 'assets/camera-roll.jpg'; if(n.includes('corporate')||n.includes('brand'))return 'assets/corporate.jpg'; return 'assets/private.jpg'; }
+  const featuredExperienceOrder=['glam','360','vogue','audio'];
+  const featuredExperienceImages={glam:'assets/glam.jpg',360:'assets/booth360.jpg',vogue:'assets/vogue.jpg',audio:'assets/audio.jpg'};
+  const featuredExperienceNames={glam:'Lola Glam',360:'Lola 360',vogue:'Lola Vogue',audio:'Lola Audio Guestbook'};
+  function experienceIdentity(item){ const name=typeof item==='string'?item:(item?.website_name||item?.name||''); const n=String(name||'').toLowerCase(); if(n.includes('glam'))return 'glam'; if(n.includes('360'))return '360'; if(n.includes('vogue'))return 'vogue'; if(n.includes('audio'))return 'audio'; return ''; }
+  function localExperienceImage(name){ const id=experienceIdentity(name); if(id)return featuredExperienceImages[id]; const n=(name||'').toLowerCase(); if(n.includes('digital'))return 'assets/camera-roll.jpg'; if(n.includes('corporate')||n.includes('brand'))return 'assets/corporate.jpg'; return 'assets/private.jpg'; }
+  function displayExperienceName(item){ const id=experienceIdentity(item); return featuredExperienceNames[id]||item.website_name||item.name; }
+  function displayExperienceImage(item){ const id=experienceIdentity(item); return id?featuredExperienceImages[id]:(apiAsset(item.image)||localExperienceImage(item.name||item.website_name)); }
+  function featuredFirst(items,{excludeCorporate=false,limit}={}){ const featured=[], other=[]; for(const item of items){ const id=experienceIdentity(item); if(id&&!featured.some(x=>experienceIdentity(x)===id))featured.push(item); else if(!(excludeCorporate&&String(item.name).toLowerCase().includes('corporate')))other.push(item); } const ordered=[...featured.sort((a,b)=>featuredExperienceOrder.indexOf(experienceIdentity(a))-featuredExperienceOrder.indexOf(experienceIdentity(b))),...other]; return limit?ordered.slice(0,limit):ordered; }
   function localEventImage(name){ const n=(name||'').toLowerCase(); if(n.includes('wedding'))return 'assets/wedding.jpg'; if(n.includes('birthday'))return 'assets/birthday.jpg'; if(n.includes('corporate')||n.includes('brand'))return 'assets/corporate.jpg'; if(n.includes('shower'))return 'assets/shower.jpg'; if(n.includes('graduat'))return 'assets/graduation.jpg'; return 'assets/private.jpg'; }
   const packageFallbacks={
     'THE ESSENTIAL':{sub:'Perfect for intimate events.',features:['2 hours of booth time','Unlimited prints on site','Digital gallery within 48 hours','One curated backdrop','On-site attendant']},
@@ -86,9 +93,9 @@
   function renderExperiences(items){
     if(!items?.length)return;
     const home=qs('[data-cms-experiences="home"]');
-    if(home){ const selected=items.filter(x=>!String(x.name).toLowerCase().includes('corporate')).slice(0,4); home.innerHTML=selected.map(x=>`<article class="card"><img src="${esc(apiAsset(x.image)||localExperienceImage(x.name))}" alt="${esc(x.website_name||x.name)}"><div class="card-body"><span class="arrow">→</span><h3>${esc(x.website_name||x.name)}</h3><p>${esc(x.public_description||x.website_short_description||x.description||'')}</p></div></article>`).join(''); }
+    if(home){ const selected=featuredFirst(items,{excludeCorporate:true,limit:4}); home.innerHTML=selected.map(x=>{const name=displayExperienceName(x); return `<article class="card"><img src="${esc(displayExperienceImage(x))}" alt="${esc(name)}"><div class="card-body"><span class="arrow">→</span><h3>${esc(name)}</h3><p>${esc(x.public_description||x.website_short_description||x.description||'')}</p></div></article>`;}).join(''); }
     const page=qs('[data-cms-experiences="page"]');
-    if(page){ page.innerHTML=items.map((x,i)=>`<div class="split" style="margin-bottom:60px"><div${i%2?' style="order:2"':''}><p class="eyebrow">${esc(x.website_name||x.name)}</p><h2 class="display" style="font-size:3rem">${esc(x.website_short_description||x.public_description||x.description||'Your LOLA moment.')}</h2>${x.website_long_description?`<p class="muted">${esc(x.website_long_description)}</p>`:''}${x.features?.length?`<ul>${x.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}<a class="btn dark" href="availability.html">Ask About ${esc(x.website_name||x.name)}</a></div><img src="${esc(apiAsset(x.image)||localExperienceImage(x.name))}" alt="${esc(x.website_name||x.name)}"></div>`).join(''); }
+    if(page){ page.innerHTML=featuredFirst(items).map((x,i)=>{const name=displayExperienceName(x); return `<div class="split" style="margin-bottom:60px"><div${i%2?' style="order:2"':''}><p class="eyebrow">${esc(name)}</p><h2 class="display" style="font-size:3rem">${esc(x.website_short_description||x.public_description||x.description||'Your LOLA moment.')}</h2>${x.website_long_description?`<p class="muted">${esc(x.website_long_description)}</p>`:''}${x.features?.length?`<ul>${x.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}<a class="btn dark" href="availability.html">Ask About ${esc(name)}</a></div><img src="${esc(displayExperienceImage(x))}" alt="${esc(name)}"></div>`;}).join(''); }
   }
 
   function renderPackages(items,showPrice=true){
