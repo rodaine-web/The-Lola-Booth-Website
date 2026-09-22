@@ -75,3 +75,6 @@ footer{background:#0f0f0f;color:#eee;padding:35px 0}.footer-grid{display:grid;gr
 .social-link:hover{opacity:1;transform:translateY(-1px)}
 .social-link svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:620px){.footer-logo{width:105px}.logo{width:92px}}
+
+/* CMS publication state must override card and section layout display rules. */
+[data-package-key][hidden],[data-experience-key][hidden],[data-event-key][hidden],[data-cms-event][hidden],[data-cms-testimonial-section][hidden]{display:none!important}
