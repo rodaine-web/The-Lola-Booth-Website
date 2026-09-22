@@ -5,7 +5,7 @@
   const apiAsset=(p)=>!p?null:(/^https?:\/\//i.test(p)?p:(p.startsWith("/api/")?API_BASE+p:p));
   const money=(v,c="USD")=>{ if(v==null||v==="") return ""; if(String(v).toLowerCase().includes("request")) return String(v); const n=Number(v); return Number.isFinite(n)?new Intl.NumberFormat("en-US",{style:"currency",currency:c,maximumFractionDigits:n%1?2:0}).format(n):String(v); };
   const esc=(s)=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-  async function get(path){ const r=await fetch(API_BASE+path,{headers:{Accept:"application/json"}}); if(!r.ok) throw new Error(`${r.status}`); return r.json(); }
+  async function get(path){ const r=await fetch(API_BASE+path,{cache:"no-cache",headers:{Accept:"application/json"}}); if(!r.ok) throw new Error(`${r.status}`); return r.json(); }
 
   // Mobile menu
   const menuBtn=qs('.menu-btn'), menu=qs('.mobile-menu');
@@ -23,106 +23,127 @@
   }
   initHero();
 
-  const featuredExperienceOrder=['glam','360','vogue','audio'];
-  const featuredExperienceImages={glam:'assets/glam.jpg',360:'assets/booth360.jpg',vogue:'assets/vogue.jpg',audio:'assets/audio.jpg'};
-  const featuredExperienceNames={glam:'Lola Glam',360:'Lola 360',vogue:'Lola Vogue',audio:'Lola Audio Guestbook'};
-  function experienceIdentity(item){ const name=typeof item==='string'?item:(item?.website_name||item?.name||''); const n=String(name||'').toLowerCase(); if(n.includes('glam'))return 'glam'; if(n.includes('360'))return '360'; if(n.includes('vogue'))return 'vogue'; if(n.includes('audio'))return 'audio'; return ''; }
-  function localExperienceImage(name){ const id=experienceIdentity(name); if(id)return featuredExperienceImages[id]; const n=(name||'').toLowerCase(); if(n.includes('digital'))return 'assets/camera-roll.jpg'; if(n.includes('corporate')||n.includes('brand'))return 'assets/corporate.jpg'; return 'assets/private.jpg'; }
-  function displayExperienceName(item){ const id=experienceIdentity(item); return featuredExperienceNames[id]||item.website_name||item.name; }
-  function displayExperienceImage(item){ const id=experienceIdentity(item); return id?featuredExperienceImages[id]:(apiAsset(item.image)||localExperienceImage(item.name||item.website_name)); }
-  function featuredFirst(items,{excludeCorporate=false,limit}={}){ const featured=[], other=[]; for(const item of items){ const id=experienceIdentity(item); if(id&&!featured.some(x=>experienceIdentity(x)===id))featured.push(item); else if(!(excludeCorporate&&String(item.name).toLowerCase().includes('corporate')))other.push(item); } const ordered=[...featured.sort((a,b)=>featuredExperienceOrder.indexOf(experienceIdentity(a))-featuredExperienceOrder.indexOf(experienceIdentity(b))),...other]; return limit?ordered.slice(0,limit):ordered; }
-  function localEventImage(name){ const n=(name||'').toLowerCase(); if(n.includes('wedding'))return 'assets/wedding.jpg'; if(n.includes('birthday'))return 'assets/birthday.jpg'; if(n.includes('corporate')||n.includes('brand'))return 'assets/corporate.jpg'; if(n.includes('shower'))return 'assets/shower.jpg'; if(n.includes('graduat'))return 'assets/graduation.jpg'; return 'assets/private.jpg'; }
-  const packageFallbacks={
-    'THE ESSENTIAL':{sub:'Perfect for intimate events.',features:['2 hours of booth time','Unlimited prints on site','Digital gallery within 48 hours','One curated backdrop','On-site attendant']},
-    'THE SIGNATURE':{sub:'Our most booked package.',features:['3 hours of booth time','Glam or Vogue photo finish','GIFs, boomerangs and instant sharing','Custom print design','Props styled to your event','On-site attendant']},
-    'THE LUXE':{sub:'For elevated celebrations.',features:['4 hours of booth time','360 booth plus photo booth','Premium backdrop styling','Branded overlays and prints','Two attendants','Same-night highlight reel']},
-    'CUSTOM':{sub:'Multi-day, multi-booth or brand activations.',features:['Any combination of experiences','Multi-day and multi-city coverage','Brand activations and press walls','Custom software and data capture']}
-  };
-
+  function experienceIdentity(item){ return ['glam','360','vogue','audio'].find(k=>String(item.website_name||item.name||item.slug||'').toLowerCase().includes(k))||''; }
+  function safeUrl(value){ try{const u=new URL(value,location.href);return ['https:','http:','mailto:','tel:'].includes(u.protocol)?value:null;}catch{return null;} }
+  function safeCopy(value){
+    const t=document.createElement('template');t.innerHTML=String(value||'');
+    const allowed=new Set(['BR','STRONG','EM','B','I','SPAN','SMALL']);
+    for(const n of [...t.content.querySelectorAll('*')]){
+      if(!allowed.has(n.tagName)){n.replaceWith(document.createTextNode(n.textContent));continue;}
+      for(const attr of [...n.attributes])if(attr.name!=='class')n.removeAttribute(attr.name);
+    }
+    return t.innerHTML;
+  }
+  const setText=(root,selector,value)=>{const n=qs(selector,root);if(n&&value!=null)n.textContent=value;};
   function setSiteSettings(settings){
     if(!settings)return;
-    const email=settings.contact_email;
-    const phone=String(settings.phone||'');
-    const serviceArea=String(settings.service_area||'');
-    const isSeedPhone=/555|010-LOLA/i.test(phone);
-    const isSeedService=/Dallas-Fort Worth/i.test(serviceArea);
-    qsa('[data-site-email]').forEach(a=>{if(email){a.textContent=email;a.href=`mailto:${email}`;}});
-    qsa('[data-site-phone]').forEach(n=>{ if(phone&&!isSeedPhone){ n.textContent=`Phone: ${phone}`; n.classList.remove('footer-placeholder'); } });
-    qsa('[data-site-service-area]').forEach(n=>{ if(serviceArea&&!isSeedService){ n.textContent=`Service area: ${serviceArea}`; n.classList.remove('footer-placeholder'); } });
+    window.LOLA_SITE_SETTINGS=settings;
+    qsa('a[href^="mailto:"],[data-site-email]').forEach(a=>{if(settings.contact_email){if(!a.querySelector('svg'))a.textContent=settings.contact_email;a.href='mailto:'+settings.contact_email;}});
+    qsa('a[href^="tel:"],[data-site-phone]').forEach(node=>{const a=node.tagName==='A'?node:qs('a[href^="tel:"]',node)||node;if(settings.phone){if(!a.querySelector('svg'))a.textContent=settings.phone;if(a.tagName==='A')a.href='tel:+'+settings.phone.replace(/[^0-9]/g,'').replace(/^(?=\d{10}$)/,'1');}});
     qsa('[data-brand-line]').forEach(n=>{if(settings.brand_line)n.textContent=settings.brand_line;});
-    qsa('[data-site-copyright]').forEach(n=>{ n.textContent=settings.copyright_text||`© ${new Date().getFullYear()} ${settings.business_name||'The LOLA Booth'}. All rights reserved.`; });
-    qsa('[data-site-socials]').forEach(el=>{
-      const links=[['Instagram',settings.instagram_url],['TikTok',settings.tiktok_url],['Facebook',settings.facebook_url],['Pinterest',settings.pinterest_url]].filter(x=>x[1]);
-      if(links.length) el.innerHTML=links.map(([label,url])=>`<a href="${esc(url)}" target="_blank" rel="noopener">${label}</a>`).join(' · ');
-    });
-    if(settings.site_title) document.title=settings.site_title;
-    if(settings.default_meta_description){ const m=qs('meta[name="description"]'); if(m)m.content=settings.default_meta_description; }
+    qsa('[data-site-service-area]').forEach(n=>{if(settings.service_area)n.textContent='Service area: '+settings.service_area;});
+    for(const [name,key] of [['instagram','instagram_url'],['tiktok','tiktok_url']])qsa(`a[href*="${name}.com"]`).forEach(a=>{const url=safeUrl(settings[key]);if(url)a.href=url;});
+    qsa('[data-site-copyright]').forEach(n=>{if(settings.copyright_text)n.textContent=settings.copyright_text;});
   }
-
-  function renderHero(home){
-    if(!qs('[data-cms-homepage]')) return;
-    const def=home.defaults?.homepage?.hero||{}, content=home.content||{};
-    const heroContent=content.hero||content.HERO||{};
-    const headline=heroContent.headline||def.headline;
-    const sub=heroContent.subheadline||heroContent.supporting_text;
-    const h=qs('.hero-copy h1'); if(h&&headline) h.innerHTML=esc(headline).replace(/\n/g,'<br>');
-    const p=qs('.hero-copy p:not(.eyebrow)'); if(p&&sub) p.textContent=sub;
-    const primary=qs('.hero-actions .btn.dark'); if(primary){ if(heroContent.primary_cta_label||def.primaryCtaLabel)primary.textContent=(heroContent.primary_cta_label||def.primaryCtaLabel)+' →'; primary.href=heroContent.primary_cta_url||def.primaryCtaUrl||'availability.html'; }
-    const banner=home.defaults?.homepage?.banner;
-    if(Array.isArray(banner)&&banner.length){
-      const track=qs('.marquee-track'); if(track){ const line=banner.map(x=>`${esc(x)} <i class="sep">✦</i>`).join(' '); track.innerHTML=`<span>${line}</span><span>${line}</span>`; }
-    }
-    const realSlides=(home.heroSlides||[]).filter(s=>!s.fallback&&s.image);
-    if(realSlides.length){
-      const media=qs('.hero-media'); if(media){
-        qsa('.hero-slide,.hero-dots',media).forEach(x=>x.remove());
-        realSlides.sort((a,b)=>(a.display_order||0)-(b.display_order||0)).forEach((s,idx)=>{
-          const d=document.createElement('div'); d.className='hero-slide'+(idx===0?' active':''); d.style.backgroundImage=`url("${apiAsset(s.image)}")`; if(s.focal_point)d.style.backgroundPosition=`${s.focal_point.x||50}% ${s.focal_point.y||50}%`; d.setAttribute('role','img'); d.setAttribute('aria-label',s.alt_text||'LOLA event'); media.prepend(d);
-        });
-        const dots=document.createElement('div'); dots.className='hero-dots'; dots.innerHTML=realSlides.map((_,i)=>`<button class="dot${i===0?' active':''}" aria-label="Slide ${i+1}"></button>`).join(''); media.append(dots); initHero();
+  function renderPageContent(site){
+    const slug=location.pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/,'')||'home';
+    const page=site.content?.['page.'+(slug==='index'?'home':slug)]?.body;
+    if(page){
+      qsa('[data-cms-copy]').forEach(n=>{const copy=page.copy?.[n.dataset.cmsCopy];if(!copy)return;n.innerHTML=safeCopy(copy.html);if(copy.href&&n.tagName==='A'&&safeUrl(copy.href))n.href=copy.href;});
+      if(page.title)document.title=page.title;
+      for(const [key,value] of Object.entries(page.seo||{})){
+        if(key==='canonical'){const n=qs('link[rel="canonical"]');if(n&&safeUrl(value))n.href=value;continue;}
+        const n=qsa('meta[name],meta[property]').find(n=>n.name===key||n.getAttribute('property')===key);if(n)n.content=value;
       }
     }
+    const media=site.content?.['website.media']?.body||{};
+    qsa('[data-cms-media]').forEach(n=>{const src=media[n.dataset.cmsMedia];if(src&&safeUrl(apiAsset(src)))n.src=apiAsset(src);});
+  }
+  function renderHero(home){
+    if(!qs('[data-cms-homepage]'))return;
+    const c=home.content?.['homepage.hero']?.body;
+    if(c){setText(document,'.hero-copy h1',c.headline);setText(document,'.hero-copy p:not(.eyebrow)',c.subheadline);const a=qs('.hero-actions .btn.dark');if(a){if(c.primaryCtaLabel)a.textContent=c.primaryCtaLabel;if(safeUrl(c.primaryCtaUrl))a.href=c.primaryCtaUrl;}}
+    const slides=(home.heroSlides||[]).filter(s=>!s.fallback&&s.image).sort((a,b)=>a.display_order-b.display_order);
+    const media=qs('.hero-media');if(!media||!slides.length)return;
+    qsa('.hero-slide,.hero-dots',media).forEach(n=>n.remove());
+    const fragment=document.createDocumentFragment();
+    slides.forEach((s,i)=>{const n=document.createElement('div');n.className='hero-slide'+(i===0?' active':'');n.style.backgroundImage=`url("${apiAsset(s.image)}")`;n.style.backgroundPosition=`${s.focal_point?.x??50}% ${s.focal_point?.y??50}%`;n.role='img';n.setAttribute('aria-label',s.alt_text||'LOLA event photograph');fragment.append(n);});
+    media.prepend(fragment);
+    const dots=document.createElement('div');dots.className='hero-dots';dots.innerHTML=slides.map((_,i)=>`<button class="dot" aria-label="Slide ${i+1}"></button>`).join('');media.append(dots);initHero();
   }
 
   function fillSelects(experiences,packages,eventTypes){
     qsa('[data-experience-select]').forEach(sel=>{ const current=sel.value; sel.innerHTML='<option value="">Not sure yet</option>'+experiences.map(x=>`<option value="${esc(x.id)}">${esc(x.website_name||x.name)}</option>`).join(''); sel.value=current; });
-    qsa('[data-package-select]').forEach(sel=>{ const current=sel.value; sel.innerHTML='<option value="">Not sure yet</option>'+packages.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join(''); sel.value=current; });
+    qsa('[data-package-select]').forEach(sel=>{ const current=sel.value; sel.innerHTML='<option value="">Not sure yet</option>'+packages.map(x=>`<option value="${esc(x.id)}">${esc(x.website_key?x.website_key.split(':')[0].toUpperCase()+' — '+x.name:x.name)}</option>`).join(''); sel.value=current; });
     if(eventTypes?.length) qsa('[data-event-type-select]').forEach(sel=>{ sel.innerHTML='<option value="">Select event type</option>'+eventTypes.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('')+'<option value="Other">Other</option>'; });
   }
 
-  function renderExperiences(items){
-    if(!items?.length)return;
-    const home=qs('[data-cms-experiences="home"]');
-    if(home){ const selected=featuredFirst(items,{excludeCorporate:true,limit:4}); home.innerHTML=selected.map(x=>{const name=displayExperienceName(x); return `<article class="card"><img src="${esc(displayExperienceImage(x))}" alt="${esc(name)}"><div class="card-body"><span class="arrow">→</span><h3>${esc(name)}</h3><p>${esc(x.public_description||x.website_short_description||x.description||'')}</p></div></article>`;}).join(''); }
-    const page=qs('[data-cms-experiences="page"]');
-    if(page){ page.innerHTML=featuredFirst(items).map((x,i)=>{const name=displayExperienceName(x); return `<div class="split" style="margin-bottom:60px"><div${i%2?' style="order:2"':''}><p class="eyebrow">${esc(name)}</p><h2 class="display" style="font-size:3rem">${esc(x.website_short_description||x.public_description||x.description||'Your LOLA moment.')}</h2>${x.website_long_description?`<p class="muted">${esc(x.website_long_description)}</p>`:''}${x.features?.length?`<ul>${x.features.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}<a class="btn dark" href="availability.html">Ask About ${esc(name)}</a></div><img src="${esc(displayExperienceImage(x))}" alt="${esc(name)}"></div>`;}).join(''); }
+  function renderExperiences(items,content={}){
+    const details=content['experience.details']?.body||{};
+    for(const grid of qsa('[data-cms-experiences]')){
+      const home=grid.dataset.cmsExperiences==='home';
+      for(const node of qsa('[data-experience-key]',grid))node.hidden=true;
+      for(const x of [...items].sort((a,b)=>a.display_order-b.display_order)){
+        const key=experienceIdentity(x),node=qsa('[data-experience-key]',grid).find(n=>n.dataset.experienceKey===key);if(!node)continue;
+        node.hidden=false;grid.append(node);
+        const d=details[key]||{};
+        setText(node,home?'h3':'.eyebrow',home?(x.website_name||x.name):d.pageLabel);
+        setText(node,home?'p':'.muted',home?x.website_short_description:x.website_long_description);
+        if(!home){setText(node,'h2',d.heading);setText(node,'.experience-kicker',d.kicker);const list=qs('ul',node);if(list&&Array.isArray(x.features))list.innerHTML=x.features.map(v=>`<li>${esc(v)}</li>`).join('');}
+        const img=qs('img',node);if(img&&x.image&&safeUrl(apiAsset(x.image)))img.src=apiAsset(x.image);
+      }
+    }
   }
-
   function renderPackages(items,showPrice=true){
-    if(!items?.length)return;
-    const sort=[...items].sort((a,b)=>(a.website_display_order||0)-(b.website_display_order||0));
-    const home=qs('[data-cms-packages="home"]');
-    if(home){ home.innerHTML=sort.slice(0,4).map(x=>{const f=packageFallbacks[String(x.name).toUpperCase()]||{}; const custom=String(x.name).toUpperCase()==='CUSTOM'; const formatted=money(x.display_price||x.starting_price,x.currency); const dp=custom?'Custom Pricing':(!showPrice?'Request Pricing':(x.display_price==='Request Pricing'?'Request Pricing':`Starting at ${formatted || 'Custom Pricing'}`)); return `<div class="card package${x.most_popular?' featured':''}">${x.most_popular?'<p class="eyebrow">Most Popular</p>':''}<h3>${esc(titleCase(x.name))}</h3><p class="muted">${esc(x.website_short_description||x.short_description||f.sub||'A LOLA experience tailored to your event.')}</p><div class="price">${esc(dp)}</div></div>`;}).join(''); }
-    const page=qs('[data-cms-packages="page"]');
-    if(page){ page.innerHTML=sort.map(x=>{const f=packageFallbacks[String(x.name).toUpperCase()]||{}; const custom=String(x.name).toUpperCase()==='CUSTOM'; const formatted=money(x.display_price||x.starting_price,x.currency); const price=custom?'Custom Pricing':(!showPrice?'Request Pricing':(x.display_price==='Request Pricing'?'Request Pricing':formatted || 'Custom Pricing')); return `<article class="pricing-card${x.most_popular?' featured':''}">${x.most_popular?'<div class="pricing-badge">Most Popular</div>':''}<h3>${esc(titleCase(x.name))}</h3><p class="sub">${esc(x.website_short_description||x.short_description||f.sub||'Tailored for your celebration.')}</p>${custom?'<div class="starting">Have something different in mind?</div><div class="big-copy">Let’s Create<br>Together</div>':`<div class="starting">${showPrice?'Starting at':'Pricing'}</div><div class="price">${esc(price)}</div>`}<hr><ul>${(f.features||[]).map(y=>`<li>${esc(y)}</li>`).join('')}</ul><a class="btn ${x.most_popular?'dark':'light'}" href="availability.html">Book Now →</a></article>`;}).join(''); }
+    const byKey=new Map(items.filter(x=>x.website_key).map(x=>[x.website_key,x]));
+    // Legacy payloads have no experience relationship; do not overwrite approved fallback.
+    if(items.length&&!byKey.size)throw new Error('CMS package migration is not available yet');
+    for(const card of qsa('[data-package-key]')){
+      const x=byKey.get(card.dataset.packageKey);card.hidden=!x;if(!x)continue;
+      const custom=x.pricing_mode==='CUSTOM'||/custom/i.test(x.name);
+      const home=!!card.closest('[data-cms-packages="home"]');
+      card.style.order=String(x.website_display_order||0);
+      setText(card,'h3',x.name);
+      setText(card,home?'p.muted':'.sub',home?(x.website_home_description||x.website_short_description):x.website_short_description);
+      const price=qs('.price',card);
+      const amount=Number(x.starting_price);
+      if(price)price.textContent=custom?(home?'Let’s Create Together':'Custom'):(!showPrice?'Request Pricing':Number.isFinite(amount)&&amount>0?(home?'Starting at ':'')+money(amount,x.currency):'Contact Us');
+      const heading=qs('.big-copy',card);if(heading&&x.website_custom_heading)heading.innerHTML=safeCopy(x.website_custom_heading);
+      const list=qs('ul',card);if(list&&Array.isArray(x.website_features))list.innerHTML=x.website_features.map(v=>`<li>${esc(v)}</li>`).join('');
+      card.classList.toggle('featured',!!x.most_popular);
+      let badge=qs(home?'p.eyebrow':'.pricing-badge',card);
+      if(x.most_popular&&!badge){badge=document.createElement(home?'p':'div');badge.className=home?'eyebrow':'pricing-badge';badge.textContent='Most Popular';card.prepend(badge);}
+      if(badge)badge.hidden=!x.most_popular;
+    }
   }
-  function titleCase(s){return String(s||'').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()).replace('Lola','LOLA');}
-
-  function renderEvents(items){
-    if(!items?.length)return;
-    for(const grid of qsa('[data-cms-events]')) grid.innerHTML=items.map(x=>`<a class="event-card" href="availability.html"><img src="${esc(apiAsset(x.image)||localEventImage(x.name))}" alt="${esc(x.name)}"><div class="label"><h3>${esc(x.name)}</h3><p>${esc(x.short_description||'Make it memorable with LOLA.')}</p></div></a>`).join('');
+  function renderEvents(items,content={}){
+    const published=new Set(items.map(x=>x.slug));
+    qsa('[data-cms-event]').forEach(n=>{n.hidden=!published.has(n.dataset.cmsEvent==='corporate'?'corporate-events':n.dataset.cmsEvent);});
+    for(const grid of qsa('[data-cms-events="home"],.event-overview-grid')){
+      const home=grid.dataset.cmsEvents==='home',order=content['events.home_order']?.body||[];
+      qsa('[data-event-key]',grid).forEach(n=>n.hidden=true);
+      const sorted=[...items].sort((a,b)=>home?((order.find(x=>x.slug===a.slug)?.order??a.display_order)-(order.find(x=>x.slug===b.slug)?.order??b.display_order)):a.display_order-b.display_order);
+      for(const x of sorted){const n=qsa('[data-event-key]',grid).find(n=>n.dataset.eventKey===x.slug);if(!n)continue;n.hidden=false;grid.append(n);setText(n,home?'h3':'h2',x.name);setText(n,'p',home?(order.find(e=>e.slug===x.slug)?.description||x.short_description):x.short_description);const img=qs('img',n);if(img&&x.image)img.src=apiAsset(x.image);}
+    }
   }
-  function renderGallery(items){ const grid=qs('[data-cms-gallery]'); if(!grid||!items?.length)return; grid.innerHTML=items.map(x=>`<img src="${esc(apiAsset(x.thumbnail||x.image))}" data-full="${esc(apiAsset(x.image)||'')}" alt="${esc(x.alt_text||x.caption||'LOLA event moment')}" loading="lazy">`).join(''); }
+  function renderGallery(items){
+    const grid=qs('[data-cms-gallery]');if(!grid)return;
+    grid.innerHTML=(items||[]).map(x=>{
+      const video=(x.tags||[]).includes('media:video');
+      return `<figure class="gallery-card" tabindex="0" data-media-type="${video?'video':'photo'}" data-category="${esc((x.tags||[]).filter(t=>!t.startsWith('media:')).join(' '))}"><img src="${esc(apiAsset(x.image))}" alt="${esc(x.alt_text||'LOLA event moment')}"><span class="media-badge">${video?'Video':'Photo'}</span>${video?'<span class="play-badge" aria-hidden="true">▶</span>':''}<figcaption class="gallery-card-meta"><strong>${esc(x.title)}</strong><span>${esc(x.caption)}</span></figcaption></figure>`;
+    }).join('');
+    document.dispatchEvent(new Event('lola:gallery-updated'));
+  }
   function renderTestimonials(items){ const grid=qs('[data-cms-testimonials]'); if(!grid)return; const section=grid.closest('[data-cms-testimonial-section]'); if(!items?.length){ if(section)section.hidden=true; grid.innerHTML=''; return; } if(section)section.hidden=false; grid.innerHTML=items.slice(0,6).map(x=>`<div class="card testimonial"><p class="quote">“${esc(x.quote)}”</p><p class="muted">— ${esc(x.client_display_name||'LOLA client')}${x.event_type?`, ${esc(x.event_type)}`:''}</p></div>`).join(''); }
-  function renderFaqs(items){ const box=qs('[data-cms-faqs]'); if(!box||!items?.length)return; box.innerHTML=items.map(x=>`<details><summary>${esc(x.question)}</summary><p class="muted">${esc(x.answer)}</p></details>`).join(''); }
+  function renderFaqs(items){ const box=qs('[data-cms-faqs]'); if(!box)return; box.innerHTML=(items||[]).map(x=>`<details><summary>${esc(x.question)}</summary><p class="muted">${esc(x.answer)}</p></details>`).join(''); }
 
   function friendlyInquiryError(status,data){
     const code=data.error?.code;
     if(status===400&&code==='SPAM_DETECTED')return 'We could not send that message. Please refresh the page and try again.';
     if(status===400)return 'Please check the highlighted details and try again.';
-    if(status===403||code==='CORS_REJECTED')return 'This booking form is not enabled for this website yet. Please email hello@thelolabooth.com.';
+    if(status===403||code==='CORS_REJECTED')return 'This booking form is not enabled for this website yet. Please email info@thelolabooth.com.';
     if(status===429)return 'Too many requests came through at once. Please wait a minute and try again.';
-    if(status>=500)return 'LOLA could not receive your inquiry right now. Please email hello@thelolabooth.com.';
+    if(status>=500)return 'LOLA could not receive your inquiry right now. Please email info@thelolabooth.com.';
     return data.error?.message||'We could not send your inquiry right now. Please try again.';
   }
 
@@ -143,11 +164,12 @@
   async function load(){
     try{
       const site=await get('/api/public/site');
+      renderPackages(site.packages||[],site.settings?.show_starting_price!==false);
+      renderPageContent(site);
       setSiteSettings(site.settings);
       renderHero(site);
-      renderExperiences(site.experiences||[]);
-      renderPackages(site.packages||[],site.settings?.show_starting_price!==false);
-      renderEvents(site.eventTypes||[]);
+      renderExperiences(site.experiences||[],site.content);
+      renderEvents(site.eventTypes||[],site.content);
       renderGallery(site.gallery||[]);
       renderTestimonials(site.testimonials||[]);
       renderFaqs(site.faqs||[]);
