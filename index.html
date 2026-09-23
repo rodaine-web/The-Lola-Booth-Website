@@ -424,13 +424,23 @@ gtag('config', 'G-CJBCQ9FYL1');
 }
 
 
+
+
+
+/* Partner logo fit refinement */
 .static-partner-logos .partner-logo-image{
+  height:176px;
+  padding:24px 30px;
   overflow:hidden;
-  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .static-partner-logos .partner-logo-image img{
-  width:100%;
-  height:76px;
+  width:auto;
+  max-width:88%;
+  height:auto;
+  max-height:92px;
   object-fit:contain;
   display:block;
   filter:none;
@@ -440,19 +450,86 @@ gtag('config', 'G-CJBCQ9FYL1');
   background:#111;
 }
 .static-partner-logos .brand-hue img{
-  height:88px;
+  max-width:78%;
+  max-height:98px;
 }
 .static-partner-logos .brand-eventnoire{
   background:#7f47df;
 }
 .static-partner-logos .brand-eventnoire img{
-  height:72px;
+  max-width:82%;
+  max-height:84px;
 }
 .static-partner-logos .brand-fasha img{
-  height:84px;
+  max-width:72%;
+  max-height:92px;
 }
 .static-partner-logos .brand-malestudio img{
-  height:70px;
+  max-width:76%;
+  max-height:88px;
+}
+.static-partner-logos .brand-dayoonas{
+  height:176px;
+  padding:24px 30px;
+}
+.static-partner-logos .brand-dayoonas .brand-wordmark{
+  font-size:1.55rem;
+}
+.static-partner-logos .brand-dayoonas .brand-submark{
+  font-size:.92rem;
+}
+@media (max-width:720px){
+  .static-partner-logos .partner-logo-image,
+  .static-partner-logos .brand-dayoonas{
+    height:150px;
+  }
+}
+
+
+/* Balanced partner logo wall */
+.static-partner-logos{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:18px;
+  align-items:stretch;
+}
+.static-partner-logos .static-brand{
+  min-height:150px;
+  padding:22px 26px;
+  background:#fff;
+  border:1px solid rgba(176,137,80,.18);
+  border-radius:20px;
+  overflow:hidden;
+}
+.static-partner-logos .partner-logo-image img{
+  width:100%;
+  height:92px;
+  max-width:210px;
+  margin:auto;
+  object-fit:contain;
+  object-position:center;
+  filter:none;
+  opacity:1;
+}
+.static-partner-logos .brand-hue,
+.static-partner-logos .brand-eventnoire{
+  background:#fff;
+}
+.static-partner-logos .brand-hue img{height:88px;max-width:210px;}
+.static-partner-logos .brand-eventnoire img{height:86px;max-width:205px;}
+.static-partner-logos .brand-fasha img{height:92px;max-width:190px;}
+.static-partner-logos .brand-malestudio img{height:78px;max-width:190px;}
+.static-partner-logos .brand-dayoonas{
+  min-height:150px;
+}
+@media (max-width:1100px){
+  .static-partner-logos{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .static-partner-logos{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:520px){
+  .static-partner-logos{grid-template-columns:1fr}
+  .static-partner-logos .static-brand{min-height:128px}
 }
 
 </style>
@@ -566,16 +643,16 @@ gtag('config', 'G-CJBCQ9FYL1');
 
 <div class="partner-logos static-partner-logos" aria-label="Brands and partners">
       <div class="partner-logo static-brand partner-logo-image brand-hue" aria-label="Hue Chicago">
-        <img src="assets/hue-logo.png" alt="Hue Chicago logo">
+        <img src="assets/hue-logo-fit.png" alt="Hue Chicago logo">
       </div>
       <div class="partner-logo static-brand partner-logo-image brand-eventnoire" aria-label="Eventnoire">
-        <img src="assets/eventnoire-logo.jpeg" alt="Eventnoire logo">
+        <img src="assets/eventnoire-logo-fit.jpeg" alt="Eventnoire logo">
       </div>
       <div class="partner-logo static-brand partner-logo-image brand-fasha" aria-label="Fasha">
-        <img src="assets/fasha-logo.jpeg" alt="Fasha logo">
+        <img src="assets/fasha-logo-fit.jpeg" alt="Fasha logo">
       </div>
       <div class="partner-logo static-brand partner-logo-image brand-malestudio" aria-label="Male Studios">
-        <img src="assets/male-studios-logo.jpg" alt="Male Studios logo">
+        <img src="assets/male-studios-logo-fit.jpg" alt="Male Studios logo">
       </div>
       <div class="partner-logo static-brand brand-dayoonas" aria-label="Dayoonas Events">
         <span class="brand-wordmark">DAYOONAS</span>
@@ -775,6 +852,8 @@ gtag('config', 'G-CJBCQ9FYL1');
 <!-- STATIC OVERRIDE: Testimonials
      This section intentionally does NOT use CMS hooks right now.
      Replace the placeholder copy with verified client testimonials before final production use. -->
+
+<!-- TESTIMONIAL COPY BELOW IS DRAFTED FOR CLIENT APPROVAL. Confirm exact wording with Terry, Jeff/Event Noire and Didi before publishing as direct quotations. -->
 <section class="testimonial-section" id="testimonials">
   <div class="container">
     <div class="section-head">
@@ -782,36 +861,38 @@ gtag('config', 'G-CJBCQ9FYL1');
         <p class="eyebrow">Kind Words</p>
         <h2 class="display">Real moments.<br>Happy people.</h2>
       </div>
-      <p class="muted" style="max-width:480px">The best part of the experience is what guests remember after the event is over.</p>
+      <p class="muted" style="max-width:480px">A few words from the people and teams we’ve had the pleasure of creating with.</p>
     </div>
 
     <div class="testimonial-grid static-testimonials">
-      <article class="testimonial-card">
+
+      <article class="testimonial-card" data-testimonial-status="draft">
         <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-quote">“Add a verified client quote here about the setup, the photos, and how guests responded to the experience.”</p>
+        <p class="testimonial-quote">“The Glam gave us the beautiful portraits we wanted, and The Vogue was such a fun surprise for our guests. People kept going back all night. Looking through the photos afterward felt like reliving the wedding all over again.”</p>
         <div class="testimonial-meta">
-          <strong>Client Name</strong>
-          <span>Wedding · Chicago</span>
+          <strong>Terry</strong>
+          <span>Chicago Wedding · The Glam + The Vogue</span>
         </div>
       </article>
 
-      <article class="testimonial-card">
+      <article class="testimonial-card" data-testimonial-status="draft">
         <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-quote">“Add a verified review here that speaks to the LOLA team, guest experience, and how easy the event felt.”</p>
+        <p class="testimonial-quote">“LOLA was a strong event partner for Culture Ball. The team came prepared, worked seamlessly within the event environment, and delivered both the 360 and Glam experiences in a way that felt polished, engaging, and aligned with the occasion. Our guests had a great experience, and the content gave them something memorable to take with them.”</p>
         <div class="testimonial-meta">
-          <strong>Client Name</strong>
-          <span>Corporate Event · Chicago</span>
+          <strong>Jeff · Event Noire</strong>
+          <span>Culture Ball · Obama Presidential Center · The 360 Booth + The Glam</span>
         </div>
       </article>
 
-      <article class="testimonial-card">
+      <article class="testimonial-card" data-testimonial-status="draft">
         <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <p class="testimonial-quote">“Add a verified client quote here about the quality of the photos or videos and how often guests came back.”</p>
+        <p class="testimonial-quote">“I wanted my 50th to feel special without making everything feel too formal. The Glam was perfect. Everyone looked amazing, people had so much fun with it, and I ended up with photos of so many people I love in one place. It was one of my favorite parts of the night.”</p>
         <div class="testimonial-meta">
-          <strong>Client Name</strong>
-          <span>Celebration · Chicago</span>
+          <strong>Didi</strong>
+          <span>50th Birthday Celebration · The Glam</span>
         </div>
       </article>
+
     </div>
   </div>
 </section>
