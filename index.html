@@ -327,11 +327,20 @@ gtag('config', 'G-CJBCQ9FYL1');
   }
 }
 
+.static-partner-logos{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
 .static-partner-logos .static-brand{
-  min-height:108px;
+  min-height:120px;
+  padding:16px;
   background:#fff;
-  border:1px solid rgba(176,137,80,.2);
+  border:1px solid rgba(176,137,80,.18);
   border-radius:18px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
   transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
 .static-partner-logos .static-brand:hover{
@@ -339,13 +348,79 @@ gtag('config', 'G-CJBCQ9FYL1');
   border-color:rgba(176,137,80,.42);
   box-shadow:0 12px 30px rgba(43,34,25,.07);
 }
-.static-partner-logos .brand-mark{
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:1.05rem;
-  line-height:1.05;
-  letter-spacing:.16em;
+.static-partner-logos .brand-wordmark,
+.static-partner-logos .brand-submark{
+  display:block;
   text-align:center;
-  color:#2a2622;
+}
+.brand-hue .brand-wordmark{
+  font-family:Georgia,"Times New Roman",serif;
+  font-style:italic;
+  font-size:2rem;
+  font-weight:700;
+  letter-spacing:.02em;
+  text-transform:lowercase;
+  color:#222;
+}
+.brand-eventnoire .brand-wordmark{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:1.2rem;
+  font-weight:800;
+  letter-spacing:.24em;
+  color:#0f0f10;
+}
+.brand-eventnoire .brand-submark{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:1.2rem;
+  font-weight:300;
+  letter-spacing:.42em;
+  color:#0f0f10;
+  margin-left:.42em;
+}
+.brand-fasha .brand-wordmark{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.9rem;
+  font-weight:700;
+  letter-spacing:.2em;
+  color:#7d5d2f;
+}
+.brand-malestudio .brand-wordmark{
+  font-family:"Trebuchet MS",Arial,sans-serif;
+  font-size:1.25rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:lowercase;
+  color:#212121;
+}
+.brand-dayoonas .brand-wordmark{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.3rem;
+  font-weight:700;
+  letter-spacing:.24em;
+  color:#2d2a26;
+}
+.brand-dayoonas .brand-submark{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:.8rem;
+  font-weight:700;
+  letter-spacing:.46em;
+  color:#a9824d;
+  margin-left:.46em;
+}
+@media (max-width:1100px){
+  .static-partner-logos{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+}
+@media (max-width:720px){
+  .static-partner-logos{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+@media (max-width:520px){
+  .static-partner-logos{
+    grid-template-columns:1fr;
+  }
 }
 
 </style>
@@ -455,15 +530,28 @@ gtag('config', 'G-CJBCQ9FYL1');
       <p>LOLA creates polished photo and video experiences for celebrations, corporate events, launches, pop-ups, and brand activations.</p>
     </div>
 
-    <div class="partner-logos static-partner-logos" aria-label="Placeholder partner brands">
-      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>ONE</span></div>
-      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>TWO</span></div>
-      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>THREE</span></div>
-      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>FOUR</span></div>
-      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>FIVE</span></div>
+    
+<div class="partner-logos static-partner-logos" aria-label="Brands and partners">
+      <div class="partner-logo static-brand brand-hue" aria-label="Hue logo">
+        <span class="brand-wordmark">hue.</span>
+      </div>
+      <div class="partner-logo static-brand brand-eventnoire" aria-label="Event Noire logo">
+        <span class="brand-wordmark">EVENT</span>
+        <span class="brand-submark">NOIRE</span>
+      </div>
+      <div class="partner-logo static-brand brand-fasha" aria-label="Fasha logo">
+        <span class="brand-wordmark">FASHA</span>
+      </div>
+      <div class="partner-logo static-brand brand-malestudio" aria-label="malestudio.co logo">
+        <span class="brand-wordmark">malestudio.co</span>
+      </div>
+      <div class="partner-logo static-brand brand-dayoonas" aria-label="Dayoonas Events logo">
+        <span class="brand-wordmark">DAYOONAS</span>
+        <span class="brand-submark">EVENTS</span>
+      </div>
     </div>
+    <p class="brand-proof-note">Static logo placeholders are being used here until the CMS is ready. Swap these for approved artwork whenever you are ready.</p>
 
-    <p class="brand-proof-note">Placeholder brands for the current static site. Replace with approved partner logos when ready.</p>
   </div>
 </section>
 
