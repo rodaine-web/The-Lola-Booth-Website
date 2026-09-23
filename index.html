@@ -175,6 +175,19 @@ gtag('config', 'G-CJBCQ9FYL1');
   color:#817970;
   font-size:.78rem;
 }
+.partner-placeholder{
+  border-style:dashed;
+  background:#fffdfa;
+}
+.partner-placeholder span{
+  color:#8a8178;
+  font-size:.78rem;
+  line-height:1.4;
+}
+.testimonial-placeholder{
+  border-style:dashed;
+  background:#fffdfa;
+}
 
 /* Occasion cards remain as homepage service context, but do not link to hidden Events page */
 .occasion-actions{
@@ -413,7 +426,7 @@ gtag('config', 'G-CJBCQ9FYL1');
   Only published/approved partners should be rendered here.
   Do not hard-code a brand name unless LOLA has permission to display it.
 -->
-<section class="brand-proof" data-cms-partner-section="home" hidden>
+<section class="brand-proof" data-cms-partner-section="home">
   <div class="container">
     <div class="brand-proof-head">
       <p class="eyebrow">Brands & Teams We’ve Worked With</p>
@@ -421,8 +434,14 @@ gtag('config', 'G-CJBCQ9FYL1');
       <p>From company celebrations to branded guest experiences, LOLA helps teams create polished moments people actually want to participate in and share.</p>
     </div>
 
-    <div class="partner-logos" data-cms-partners="home"></div>
-    <p class="brand-proof-note">Logos are displayed only for approved, published partners.</p>
+    <div class="partner-logos" data-cms-partners="home">
+      <div class="partner-logo partner-placeholder"><span>Approved partner logos will appear here from the CMS.</span></div>
+      <div class="partner-logo partner-placeholder"><span>Corporate Events</span></div>
+      <div class="partner-logo partner-placeholder"><span>Brand Activations</span></div>
+      <div class="partner-logo partner-placeholder"><span>Launches & Pop-Ups</span></div>
+      <div class="partner-logo partner-placeholder"><span>Team Celebrations</span></div>
+    </div>
+    <p class="brand-proof-note">Replace these placeholders with approved partner logos in the CMS before final production launch.</p>
   </div>
 </section>
 
@@ -625,7 +644,23 @@ gtag('config', 'G-CJBCQ9FYL1');
     <p class="muted" style="max-width:480px">The best part of the experience is what guests remember after the event is over.</p>
   </div>
 
-  <div class="testimonial-grid" data-cms-testimonials="home"></div>
+  <div class="testimonial-grid" data-cms-testimonials="home">
+    <article class="testimonial-card testimonial-placeholder">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">Published client testimonials from the CMS will appear here.</p>
+      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
+    </article>
+    <article class="testimonial-card testimonial-placeholder">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">Use this space for a real quote about the experience, service, setup, or guest reaction.</p>
+      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
+    </article>
+    <article class="testimonial-card testimonial-placeholder">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-quote">A third published testimonial can reinforce trust before the final booking call to action.</p>
+      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
+    </article>
+  </div>
 </div>
 </section>
 
@@ -711,35 +746,33 @@ gtag('config', 'G-CJBCQ9FYL1');
 <script src="app.js"></script>
 
 <!--
-  This helper keeps empty proof sections from appearing before CMS data exists.
-  app.js should remove hidden from the partner section when it renders >= 1 published partner.
-  Testimonials remain visible only when app.js inserts published testimonial cards.
+  CMS behavior:
+  - Sections remain visible so their layout can be reviewed.
+  - app.js should replace placeholder cards with published CMS records.
+  - Do not publish placeholder cards to production once real records are available.
 -->
 <script>
 (function(){
-  const testimonialGrid = document.querySelector('[data-cms-testimonials="home"]');
-  const testimonialSection = document.querySelector('[data-cms-testimonial-section="home"]');
+  function clearPlaceholdersWhenRealItemsArrive(gridSelector, placeholderClass){
+    const grid = document.querySelector(gridSelector);
+    if (!grid) return;
 
-  if (testimonialGrid && testimonialSection) {
-    const updateTestimonials = () => {
-      const hasTestimonials = testimonialGrid.children.length > 0;
-      testimonialSection.hidden = !hasTestimonials;
+    const clean = () => {
+      const children = Array.from(grid.children);
+      const realItems = children.filter(el => !el.classList.contains(placeholderClass));
+      if (realItems.length) {
+        children
+          .filter(el => el.classList.contains(placeholderClass))
+          .forEach(el => el.remove());
+      }
     };
-    updateTestimonials();
-    new MutationObserver(updateTestimonials).observe(testimonialGrid,{childList:true});
+
+    clean();
+    new MutationObserver(clean).observe(grid,{childList:true});
   }
 
-  const partnerGrid = document.querySelector('[data-cms-partners="home"]');
-  const partnerSection = document.querySelector('[data-cms-partner-section="home"]');
-
-  if (partnerGrid && partnerSection) {
-    const updatePartners = () => {
-      const hasPartners = partnerGrid.children.length > 0;
-      partnerSection.hidden = !hasPartners;
-    };
-    updatePartners();
-    new MutationObserver(updatePartners).observe(partnerGrid,{childList:true});
-  }
+  clearPlaceholdersWhenRealItemsArrive('[data-cms-testimonials="home"]','testimonial-placeholder');
+  clearPlaceholdersWhenRealItemsArrive('[data-cms-partners="home"]','partner-placeholder');
 })();
 </script>
 
