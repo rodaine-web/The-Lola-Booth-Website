@@ -326,6 +326,28 @@ gtag('config', 'G-CJBCQ9FYL1');
     font-size:.92rem;
   }
 }
+
+.static-partner-logos .static-brand{
+  min-height:108px;
+  background:#fff;
+  border:1px solid rgba(176,137,80,.2);
+  border-radius:18px;
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+}
+.static-partner-logos .static-brand:hover{
+  transform:translateY(-3px);
+  border-color:rgba(176,137,80,.42);
+  box-shadow:0 12px 30px rgba(43,34,25,.07);
+}
+.static-partner-logos .brand-mark{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.05rem;
+  line-height:1.05;
+  letter-spacing:.16em;
+  text-align:center;
+  color:#2a2622;
+}
+
 </style>
 </head>
 
@@ -421,27 +443,27 @@ gtag('config', 'G-CJBCQ9FYL1');
   </div>
 </section>
 
-<!--
-  CMS PARTNER SECTION
-  Only published/approved partners should be rendered here.
-  Do not hard-code a brand name unless LOLA has permission to display it.
--->
-<section class="brand-proof" data-cms-partner-section="home">
+
+<!-- STATIC OVERRIDE: Brands & Partners
+     This section intentionally does NOT use CMS hooks right now.
+     Replace these placeholders with real partner logos/names when ready. -->
+<section class="brand-proof" id="brands-partners">
   <div class="container">
     <div class="brand-proof-head">
-      <p class="eyebrow">Brands & Teams We’ve Worked With</p>
+      <p class="eyebrow">Brands & Partners</p>
       <h2>Good company makes good events better.</h2>
-      <p>From company celebrations to branded guest experiences, LOLA helps teams create polished moments people actually want to participate in and share.</p>
+      <p>LOLA creates polished photo and video experiences for celebrations, corporate events, launches, pop-ups, and brand activations.</p>
     </div>
 
-    <div class="partner-logos" data-cms-partners="home">
-      <div class="partner-logo partner-placeholder"><span>Approved partner logos will appear here from the CMS.</span></div>
-      <div class="partner-logo partner-placeholder"><span>Corporate Events</span></div>
-      <div class="partner-logo partner-placeholder"><span>Brand Activations</span></div>
-      <div class="partner-logo partner-placeholder"><span>Launches & Pop-Ups</span></div>
-      <div class="partner-logo partner-placeholder"><span>Team Celebrations</span></div>
+    <div class="partner-logos static-partner-logos" aria-label="Placeholder partner brands">
+      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>ONE</span></div>
+      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>TWO</span></div>
+      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>THREE</span></div>
+      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>FOUR</span></div>
+      <div class="partner-logo static-brand"><span class="brand-mark">BRAND<br>FIVE</span></div>
     </div>
-    <p class="brand-proof-note">Replace these placeholders with approved partner logos in the CMS before final production launch.</p>
+
+    <p class="brand-proof-note">Placeholder brands for the current static site. Replace with approved partner logos when ready.</p>
   </div>
 </section>
 
@@ -628,40 +650,49 @@ gtag('config', 'G-CJBCQ9FYL1');
 </div>
 </section>
 
-<!--
-  TESTIMONIALS:
-  Existing public testimonials endpoint can populate this container.
-  Never publish invented quotes. Only render testimonials marked published in the CMS.
--->
-<section class="testimonial-section" data-cms-testimonial-section="home">
-<div class="container">
-  <div class="section-head">
-    <div>
-      <p class="eyebrow" data-cms-copy="home.039">Kind Words</p>
-      <h2 class="display" data-cms-copy="home.040">Real events.<br>Happy people.</h2>
+
+<!-- STATIC OVERRIDE: Testimonials
+     This section intentionally does NOT use CMS hooks right now.
+     Replace the placeholder copy with verified client testimonials before final production use. -->
+<section class="testimonial-section" id="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Kind Words</p>
+        <h2 class="display">Real moments.<br>Happy people.</h2>
+      </div>
+      <p class="muted" style="max-width:480px">The best part of the experience is what guests remember after the event is over.</p>
     </div>
 
-    <p class="muted" style="max-width:480px">The best part of the experience is what guests remember after the event is over.</p>
-  </div>
+    <div class="testimonial-grid static-testimonials">
+      <article class="testimonial-card">
+        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+        <p class="testimonial-quote">“Add a verified client quote here about the setup, the photos, and how guests responded to the experience.”</p>
+        <div class="testimonial-meta">
+          <strong>Client Name</strong>
+          <span>Wedding · Chicago</span>
+        </div>
+      </article>
 
-  <div class="testimonial-grid" data-cms-testimonials="home">
-    <article class="testimonial-card testimonial-placeholder">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-quote">Published client testimonials from the CMS will appear here.</p>
-      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
-    </article>
-    <article class="testimonial-card testimonial-placeholder">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-quote">Use this space for a real quote about the experience, service, setup, or guest reaction.</p>
-      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
-    </article>
-    <article class="testimonial-card testimonial-placeholder">
-      <div class="testimonial-stars">★★★★★</div>
-      <p class="testimonial-quote">A third published testimonial can reinforce trust before the final booking call to action.</p>
-      <div class="testimonial-meta"><strong>Client testimonial</strong><span>Replace with a real published review</span></div>
-    </article>
+      <article class="testimonial-card">
+        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+        <p class="testimonial-quote">“Add a verified review here that speaks to the LOLA team, guest experience, and how easy the event felt.”</p>
+        <div class="testimonial-meta">
+          <strong>Client Name</strong>
+          <span>Corporate Event · Chicago</span>
+        </div>
+      </article>
+
+      <article class="testimonial-card">
+        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
+        <p class="testimonial-quote">“Add a verified client quote here about the quality of the photos or videos and how often guests came back.”</p>
+        <div class="testimonial-meta">
+          <strong>Client Name</strong>
+          <span>Celebration · Chicago</span>
+        </div>
+      </article>
+    </div>
   </div>
-</div>
 </section>
 
 <section class="cta">
@@ -745,36 +776,7 @@ gtag('config', 'G-CJBCQ9FYL1');
 <script src="config.js"></script>
 <script src="app.js"></script>
 
-<!--
-  CMS behavior:
-  - Sections remain visible so their layout can be reviewed.
-  - app.js should replace placeholder cards with published CMS records.
-  - Do not publish placeholder cards to production once real records are available.
--->
-<script>
-(function(){
-  function clearPlaceholdersWhenRealItemsArrive(gridSelector, placeholderClass){
-    const grid = document.querySelector(gridSelector);
-    if (!grid) return;
 
-    const clean = () => {
-      const children = Array.from(grid.children);
-      const realItems = children.filter(el => !el.classList.contains(placeholderClass));
-      if (realItems.length) {
-        children
-          .filter(el => el.classList.contains(placeholderClass))
-          .forEach(el => el.remove());
-      }
-    };
-
-    clean();
-    new MutationObserver(clean).observe(grid,{childList:true});
-  }
-
-  clearPlaceholdersWhenRealItemsArrive('[data-cms-testimonials="home"]','testimonial-placeholder');
-  clearPlaceholdersWhenRealItemsArrive('[data-cms-partners="home"]','partner-placeholder');
-})();
-</script>
 
 </body>
 </html>
