@@ -427,186 +427,16 @@ gtag('config', 'G-CJBCQ9FYL1');
 
 
 
-/* Partner logo fit refinement */
-.static-partner-logos .partner-logo-image{
-  height:176px;
-  padding:24px 30px;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.static-partner-logos .partner-logo-image img{
-  width:auto;
-  max-width:88%;
-  height:auto;
-  max-height:92px;
-  object-fit:contain;
-  display:block;
-  filter:none;
-  opacity:1;
-}
-.static-partner-logos .brand-hue{
-  background:#111;
-}
-.static-partner-logos .brand-hue img{
-  max-width:78%;
-  max-height:98px;
-}
-.static-partner-logos .brand-eventnoire{
-  background:#7f47df;
-}
-.static-partner-logos .brand-eventnoire img{
-  max-width:82%;
-  max-height:84px;
-}
-.static-partner-logos .brand-fasha img{
-  max-width:72%;
-  max-height:92px;
-}
-.static-partner-logos .brand-malestudio img{
-  max-width:76%;
-  max-height:88px;
-}
-.static-partner-logos .brand-dayoonas{
-  height:176px;
-  padding:24px 30px;
-}
-.static-partner-logos .brand-dayoonas .brand-wordmark{
-  font-size:1.55rem;
-}
-.static-partner-logos .brand-dayoonas .brand-submark{
-  font-size:.92rem;
-}
-@media (max-width:720px){
-  .static-partner-logos .partner-logo-image,
-  .static-partner-logos .brand-dayoonas{
-    height:150px;
-  }
-}
-
-
-/* Balanced partner logo wall */
-.static-partner-logos{
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:18px;
-  align-items:stretch;
-}
-.static-partner-logos .static-brand{
-  min-height:150px;
-  padding:22px 26px;
-  background:#fff;
-  border:1px solid rgba(176,137,80,.18);
-  border-radius:20px;
-  overflow:hidden;
-}
-.static-partner-logos .partner-logo-image img{
-  width:100%;
-  height:92px;
-  max-width:210px;
-  margin:auto;
-  object-fit:contain;
-  object-position:center;
-  filter:none;
-  opacity:1;
-}
-.static-partner-logos .brand-hue,
-.static-partner-logos .brand-eventnoire{
-  background:#fff;
-}
-.static-partner-logos .brand-hue img{height:88px;max-width:210px;}
-.static-partner-logos .brand-eventnoire img{height:86px;max-width:205px;}
-.static-partner-logos .brand-fasha img{height:92px;max-width:190px;}
-.static-partner-logos .brand-malestudio img{height:78px;max-width:190px;}
-.static-partner-logos .brand-dayoonas{
-  min-height:150px;
-}
-@media (max-width:1100px){
-  .static-partner-logos{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media (max-width:720px){
-  .static-partner-logos{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width:520px){
-  .static-partner-logos{grid-template-columns:1fr}
-  .static-partner-logos .static-brand{min-height:128px}
-}
-
-
-/* Partner logo sizing */
-.static-partner-logos{
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:18px;
-  align-items:stretch;
-}
-.static-partner-logos .static-brand{
-  min-height:150px;
-  height:150px;
-  padding:20px 24px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border:1px solid rgba(176,137,80,.18);
-  border-radius:20px;
-  background:#fff !important;
-  overflow:hidden;
-}
-.static-partner-logos .partner-logo-image img{
-  display:block;
-  width:auto;
-  max-width:100%;
-  height:auto;
-  max-height:92px;
-  margin:auto;
-  object-fit:contain;
-  object-position:center;
-  filter:none !important;
-  opacity:1 !important;
-}
-.static-partner-logos .brand-hue img{
-  max-width:205px;
-  max-height:96px;
-}
-.static-partner-logos .brand-eventnoire img{
-  max-width:205px;
-  max-height:82px;
-}
-.static-partner-logos .brand-fasha img{
-  max-width:190px;
-  max-height:96px;
-}
-.static-partner-logos .brand-malestudio img{
-  max-width:185px;
-  max-height:74px;
-}
-.static-partner-logos .brand-dayoonas{
-  flex-direction:column;
-  gap:6px;
-}
-.static-partner-logos .brand-dayoonas .brand-wordmark{
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:1.3rem;
-  font-weight:700;
-  letter-spacing:.24em;
-  color:#2d2a26;
-}
-.static-partner-logos .brand-dayoonas .brand-submark{
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:.8rem;
-  font-weight:700;
-  letter-spacing:.46em;
-  color:#a9824d;
-  margin-left:.46em;
-}
-@media (max-width:1100px){
-  .static-partner-logos{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media (max-width:720px){
-  .static-partner-logos{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media (max-width:520px){
-  .static-partner-logos{grid-template-columns:1fr}
-}
+/* One sizing rule keeps every logo inside the card's padded content area. */
+.static-partner-logos { grid-template-columns:repeat(5,minmax(0,1fr)); gap:18px; align-items:stretch; }
+.static-partner-logos .static-brand { box-sizing:border-box; min-width:0; min-height:150px; height:150px; padding:24px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(176,137,80,.18); border-radius:20px; background:#fff; overflow:hidden; }
+.static-partner-logos .partner-logo-image img { display:block; width:100%; height:100%; max-width:100%; max-height:100%; min-width:0; object-fit:contain; object-position:center; margin:0; filter:none; opacity:1; }
+.static-partner-logos .brand-dayoonas { flex-direction:column; gap:6px; }
+.static-partner-logos .brand-dayoonas .brand-wordmark { font-family:Georgia,"Times New Roman",serif; font-size:clamp(.8rem,1.3vw,1.3rem); font-weight:700; letter-spacing:.18em; color:#2d2a26; }
+.static-partner-logos .brand-dayoonas .brand-submark { font-family:Arial,Helvetica,sans-serif; font-size:.75rem; font-weight:700; letter-spacing:.35em; color:#a9824d; }
+@media(max-width:1100px) { .static-partner-logos { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media(max-width:720px) { .static-partner-logos { grid-template-columns:repeat(2,minmax(0,1fr)); } .static-partner-logos .static-brand { padding:18px; height:128px; min-height:128px; } }
+@media(max-width:380px) { .static-partner-logos { grid-template-columns:1fr; } }
 
 </style>
 </head>
@@ -715,7 +545,7 @@ gtag('config', 'G-CJBCQ9FYL1');
       <p>LOLA creates polished photo and video experiences for celebrations, corporate events, launches, pop-ups, and brand activations.</p>
     </div>
 
-    
+
 
 <div class="partner-logos static-partner-logos" aria-label="Brands and partners">
       <div class="partner-logo static-brand partner-logo-image brand-hue" aria-label="Hue Chicago">
