@@ -427,15 +427,18 @@ gtag('config', 'G-CJBCQ9FYL1');
 
 
 
-/* One sizing rule keeps every logo inside the card's padded content area. */
+/* Compact cards extend each logo background without cropping the artwork. */
 .static-partner-logos { grid-template-columns:repeat(5,minmax(0,1fr)); gap:18px; align-items:stretch; }
-.static-partner-logos .static-brand { box-sizing:border-box; min-width:0; min-height:150px; height:150px; padding:24px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(176,137,80,.18); border-radius:20px; background:#fff; overflow:hidden; }
+.static-partner-logos .static-brand { box-sizing:border-box; min-width:0; min-height:120px; height:120px; padding:16px; display:flex; align-items:center; justify-content:center; border:0; border-radius:16px; background:#fff; overflow:hidden; }
 .static-partner-logos .partner-logo-image img { display:block; width:100%; height:100%; max-width:100%; max-height:100%; min-width:0; object-fit:contain; object-position:center; margin:0; filter:none; opacity:1; }
+.static-partner-logos .brand-hue { background:#060606; }
+.static-partner-logos .brand-eventnoire { background:#7f4de0; }
+.static-partner-logos .brand-malestudio { background:#000; }
 .static-partner-logos .brand-dayoonas { flex-direction:column; gap:6px; }
 .static-partner-logos .brand-dayoonas .brand-wordmark { font-family:Georgia,"Times New Roman",serif; font-size:clamp(.8rem,1.3vw,1.3rem); font-weight:700; letter-spacing:.18em; color:#2d2a26; }
 .static-partner-logos .brand-dayoonas .brand-submark { font-family:Arial,Helvetica,sans-serif; font-size:.75rem; font-weight:700; letter-spacing:.35em; color:#a9824d; }
 @media(max-width:1100px) { .static-partner-logos { grid-template-columns:repeat(3,minmax(0,1fr)); } }
-@media(max-width:720px) { .static-partner-logos { grid-template-columns:repeat(2,minmax(0,1fr)); } .static-partner-logos .static-brand { padding:18px; height:128px; min-height:128px; } }
+@media(max-width:720px) { .static-partner-logos { grid-template-columns:repeat(2,minmax(0,1fr)); } .static-partner-logos .static-brand { padding:12px; height:104px; min-height:104px; } }
 @media(max-width:380px) { .static-partner-logos { grid-template-columns:1fr; } }
 
 </style>
