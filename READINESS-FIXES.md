@@ -1,3 +1,5 @@
+> Historical pre-release notes. These fixes were deployed before production v1.0.0. See CHANGELOG.md and RELEASING.md for current release status.
+
 # Website readiness fixes — pending production approval
 
 ## Completed in staging code
