@@ -68,13 +68,8 @@
 
 <link href="styles.css" rel="stylesheet">
 
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-CJBCQ9FYL1"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-CJBCQ9FYL1');
-</script>
+
+
 
 <style>
 .feature-band .feature-icons{
@@ -434,6 +429,9 @@ gtag('config', 'G-CJBCQ9FYL1');
 .static-partner-logos .brand-hue { background:#060606; }
 .static-partner-logos .brand-eventnoire { background:#7f4de0; }
 .static-partner-logos .brand-malestudio { background:#000; }
+.static-partner-logos .brand-malestudio img { filter:brightness(7); max-width:130px; }
+.static-partner-logos .brand-eventnoire img { max-width:160px; }
+.static-partner-logos .brand-fasha img { max-width:176px; }
 .static-partner-logos .brand-dayoonas { flex-direction:column; gap:6px; }
 .static-partner-logos .brand-dayoonas .brand-wordmark { font-family:Georgia,"Times New Roman",serif; font-size:clamp(.8rem,1.3vw,1.3rem); font-weight:700; letter-spacing:.18em; color:#2d2a26; }
 .static-partner-logos .brand-dayoonas .brand-submark { font-family:Arial,Helvetica,sans-serif; font-size:.75rem; font-weight:700; letter-spacing:.35em; color:#a9824d; }
@@ -442,17 +440,26 @@ gtag('config', 'G-CJBCQ9FYL1');
 @media(max-width:380px) { .static-partner-logos { grid-template-columns:1fr; } }
 
 </style>
+
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CJBCQ9FYL1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-CJBCQ9FYL1');
+</script>
 </head>
 
 <body>
+
 
 <header>
 <div class="container nav">
   <div class="brand-lockup">
     <a href="index.html">
-      <img alt="The LOLA Booth" class="logo" src="assets/LOLA_Primary_Dark_Transparent.png" data-cms-media="assets/LOLA_Primary_Dark_Transparent.png">
+      <img alt="The LOLA Booth" class="logo" src="assets/LOLA_Primary_Dark_Transparent.webp" data-cms-media="assets/LOLA_Primary_Dark_Transparent.png">
     </a>
     <span class="brand-tag">Good people. Better photos.</span>
   </div>
@@ -504,18 +511,18 @@ gtag('config', 'G-CJBCQ9FYL1');
   </div>
 
   <div aria-label="The LOLA Booth event slideshow" class="hero-media" data-cms-hero-slides="true">
-    <div class="hero-slide active" style="background-image:url('assets/hero-1.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('assets/hero-2.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('assets/hero-3.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('assets/hero-4.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('assets/hero-5.jpg')"></div>
-    <div class="hero-slide" style="background-image:url('assets/hero-6.jpg')"></div>
+    <div class="hero-slide active" style="background-image:url('assets/hero-1.webp')"></div>
+    <div class="hero-slide" style="background-image:url('assets/hero-2.webp')"></div>
+    <div class="hero-slide" style="background-image:url('assets/hero-3.webp')"></div>
+    <div class="hero-slide" style="background-image:url('assets/hero-4.webp')"></div>
+    <div class="hero-slide" style="background-image:url('assets/hero-5.webp')"></div>
+    <div class="hero-slide" style="background-image:url('assets/hero-6.webp')"></div>
 
     <div class="hero-script" data-cms-copy="home.021">Good<br>People<br>Better<br>Photos ♡</div>
 
     <div class="photo-strip">
-      <img alt="Guest photo" src="assets/hero-v2-2.jpg" data-cms-media="assets/hero-v2-2.jpg">
-      <img alt="Guest photo" src="assets/hero-v2-4.jpg" data-cms-media="assets/hero-v2-4.jpg">
+      <img alt="Guest photo" src="assets/hero-v2-2.webp" data-cms-media="assets/hero-v2-2.jpg">
+      <img alt="Guest photo" src="assets/hero-v2-4.webp" data-cms-media="assets/hero-v2-4.jpg">
       <strong>THE LOLA BOOTH</strong>
       <span>Same energy,<br>always ♡</span>
     </div>
@@ -542,6 +549,46 @@ gtag('config', 'G-CJBCQ9FYL1');
 <!-- STATIC OVERRIDE: Brands & Partners
      This section intentionally does NOT use CMS hooks right now.
      Replace these placeholders with real partner logos/names when ready. -->
+
+
+<section class="section">
+<div class="container">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow" data-cms-copy="home.022">Our Experiences</p>
+      <h2 class="display" data-cms-copy="home.023">Choose Your Moment</h2>
+    </div>
+
+    <div>
+      <p class="muted" data-cms-copy="home.024">From timeless portraits to viral-worthy videos, we bring the wow to every kind of celebration.</p>
+      <a class="eyebrow" href="experiences.html" data-cms-copy="home.025">Explore all experiences →</a>
+    </div>
+  </div>
+
+  <div class="grid four" data-cms-experiences="home">
+    <article class="card" data-experience-key="glam">
+      <img alt="The Glam by The LOLA Booth" src="assets/glam.webp" data-cms-media="assets/glam.jpg">
+      <div class="card-body"><span class="arrow">→</span><h3>The Glam</h3><p>Studio-quality portraits with that iconic polished look.</p></div>
+    </article>
+
+    <article class="card" data-experience-key="360">
+      <img alt="The 360 Booth by The LOLA Booth" src="assets/booth360.webp" data-cms-media="assets/booth360.jpg">
+      <div class="card-body"><span class="arrow">→</span><h3>The 360 Booth</h3><p>Dynamic video moments designed to move, loop, and get shared.</p></div>
+    </article>
+
+    <article class="card" data-experience-key="vogue">
+      <img alt="The Vogue by The LOLA Booth" src="assets/vogue.webp" data-cms-media="assets/vogue.jpg">
+      <div class="card-body"><span class="arrow">→</span><h3>The Vogue</h3><p>An editorial-style experience for your main-character moment.</p></div>
+    </article>
+
+    <article class="card" data-experience-key="audio">
+      <img alt="The Audio Guest Book by The LOLA Booth" src="assets/audio.webp" data-cms-media="assets/audio.jpg">
+      <div class="card-body"><span class="arrow">→</span><h3>The Audio Guest Book</h3><p>Heartfelt and hilarious voice messages worth hearing again.</p></div>
+    </article>
+  </div>
+</div>
+</section>
+
 <section class="brand-proof" id="brands-partners">
   <div class="container">
     <div class="brand-proof-head">
@@ -576,44 +623,6 @@ gtag('config', 'G-CJBCQ9FYL1');
   </div>
 </section>
 
-<section class="section">
-<div class="container">
-  <div class="section-head">
-    <div>
-      <p class="eyebrow" data-cms-copy="home.022">Our Experiences</p>
-      <h2 class="display" data-cms-copy="home.023">Choose Your Moment</h2>
-    </div>
-
-    <div>
-      <p class="muted" data-cms-copy="home.024">From timeless portraits to viral-worthy videos, we bring the wow to every kind of celebration.</p>
-      <a class="eyebrow" href="experiences.html" data-cms-copy="home.025">Explore all experiences →</a>
-    </div>
-  </div>
-
-  <div class="grid four" data-cms-experiences="home">
-    <article class="card" data-experience-key="glam">
-      <img alt="The Glam by The LOLA Booth" src="assets/glam.jpg" data-cms-media="assets/glam.jpg">
-      <div class="card-body"><span class="arrow">→</span><h3>The Glam</h3><p>Studio-quality portraits with that iconic polished look.</p></div>
-    </article>
-
-    <article class="card" data-experience-key="360">
-      <img alt="The 360 Booth by The LOLA Booth" src="assets/booth360.jpg" data-cms-media="assets/booth360.jpg">
-      <div class="card-body"><span class="arrow">→</span><h3>The 360 Booth</h3><p>Dynamic video moments designed to move, loop, and get shared.</p></div>
-    </article>
-
-    <article class="card" data-experience-key="vogue">
-      <img alt="The Vogue by The LOLA Booth" src="assets/vogue.jpg" data-cms-media="assets/vogue.jpg">
-      <div class="card-body"><span class="arrow">→</span><h3>The Vogue</h3><p>An editorial-style experience for your main-character moment.</p></div>
-    </article>
-
-    <article class="card" data-experience-key="audio">
-      <img alt="The Audio Guest Book by The LOLA Booth" src="assets/audio.jpg" data-cms-media="assets/audio.jpg">
-      <div class="card-body"><span class="arrow">→</span><h3>The Audio Guest Book</h3><p>Heartfelt and hilarious voice messages worth hearing again.</p></div>
-    </article>
-  </div>
-</div>
-</section>
-
 <section class="feature-band">
 <div class="container feature-wrap">
   <div>
@@ -644,7 +653,7 @@ gtag('config', 'G-CJBCQ9FYL1');
     </div>
   </div>
 
-  <img alt="LOLA photo strips, phone sharing and keepsakes" src="assets/camera-roll-v2.jpg" data-cms-media="assets/camera-roll-v2.jpg">
+  <img alt="LOLA photo strips, phone sharing and keepsakes" src="assets/camera-roll-v2.webp" data-cms-media="assets/camera-roll-v2.jpg">
 </div>
 </section>
 
@@ -661,32 +670,32 @@ gtag('config', 'G-CJBCQ9FYL1');
 
   <div class="grid three">
     <article class="event-card">
-      <img alt="Wedding photo booth experience" src="assets/wedding.jpg" data-cms-media="assets/wedding.jpg">
+      <img alt="Wedding photo booth experience" src="assets/wedding.webp" data-cms-media="assets/wedding.jpg">
       <div class="label"><h3>Weddings</h3><p>Elegant entertainment your guests will love.</p></div>
     </article>
 
     <article class="event-card">
-      <img alt="Birthday photo booth experience" src="assets/birthday.jpg" data-cms-media="assets/birthday.jpg">
+      <img alt="Birthday photo booth experience" src="assets/birthday.webp" data-cms-media="assets/birthday.jpg">
       <div class="label"><h3>Birthdays</h3><p>A reason to pose, laugh and do it again.</p></div>
     </article>
 
     <article class="event-card">
-      <img alt="Shower photo booth experience" src="assets/shower.jpg" data-cms-media="assets/shower.jpg">
+      <img alt="Shower photo booth experience" src="assets/shower.webp" data-cms-media="assets/shower.jpg">
       <div class="label"><h3>Showers</h3><p>Beautiful keepsakes for life’s sweetest moments.</p></div>
     </article>
 
     <article class="event-card">
-      <img alt="Graduation photo booth experience" src="assets/graduation.jpg" data-cms-media="assets/graduation.jpg">
+      <img alt="Graduation photo booth experience" src="assets/graduation.webp" data-cms-media="assets/graduation.jpg">
       <div class="label"><h3>Graduations</h3><p>You earned the photo.</p></div>
     </article>
 
     <article class="event-card">
-      <img alt="Corporate photo booth and brand activation" src="assets/corporate.jpg" data-cms-media="assets/corporate.jpg">
+      <img alt="Corporate photo booth and brand activation" src="assets/corporate.webp" data-cms-media="assets/corporate.jpg">
       <div class="label"><h3>Corporate Events</h3><p>Branded experiences that create connection.</p></div>
     </article>
 
     <article class="event-card">
-      <img alt="Private event photo booth experience" src="assets/private.jpg" data-cms-media="assets/private.jpg">
+      <img alt="Private event photo booth experience" src="assets/private.webp" data-cms-media="assets/private.jpg">
       <div class="label"><h3>Private Events</h3><p>Sometimes the best reason to celebrate is everyone together.</p></div>
     </article>
   </div>
@@ -823,7 +832,7 @@ gtag('config', 'G-CJBCQ9FYL1');
 <div class="container footer-top">
 
   <div class="footer-brand">
-    <img alt="The LOLA Booth" class="footer-logo" src="assets/LOLA_Primary_Light_Transparent.png" data-cms-media="assets/LOLA_Primary_Light_Transparent.png">
+    <img alt="The LOLA Booth" class="footer-logo" src="assets/LOLA_Primary_Light_Transparent.webp" data-cms-media="assets/LOLA_Primary_Light_Transparent.png">
     <span class="foot-tag" data-brand-line="true">Good people. Better photos.</span>
     <p class="small" data-cms-copy="home.045">Premium photo booth experiences for weddings, celebrations, corporate events, and brands.</p>
   </div>

@@ -1,0 +1,182 @@
+[
+  {
+    "source": "LOLA_Primary_Dark_Transparent.png",
+    "target": "LOLA_Primary_Dark_Transparent.webp",
+    "before": 363762,
+    "after": 31798
+  },
+  {
+    "source": "LOLA_Primary_Light_Transparent.png",
+    "target": "LOLA_Primary_Light_Transparent.webp",
+    "before": 363408,
+    "after": 29138
+  },
+  {
+    "source": "audio.jpg",
+    "target": "audio.webp",
+    "before": 214548,
+    "after": 77366
+  },
+  {
+    "source": "birthday.jpg",
+    "target": "birthday.webp",
+    "before": 2000736,
+    "after": 110022
+  },
+  {
+    "source": "booth360.jpg",
+    "target": "booth360.webp",
+    "before": 2211889,
+    "after": 169806
+  },
+  {
+    "source": "booth3601.jpg",
+    "target": "booth3601.webp",
+    "before": 219680,
+    "after": 82982
+  },
+  {
+    "source": "camera-roll-v2.jpg",
+    "target": "camera-roll-v2.webp",
+    "before": 109872,
+    "after": 48788
+  },
+  {
+    "source": "camera-roll.jpg",
+    "target": "camera-roll.webp",
+    "before": 26412,
+    "after": 10240
+  },
+  {
+    "source": "corporate.jpg",
+    "target": "corporate.webp",
+    "before": 1929585,
+    "after": 111594
+  },
+  {
+    "source": "cta-v2.jpg",
+    "target": "cta-v2.webp",
+    "before": 71477,
+    "after": 27336
+  },
+  {
+    "source": "cta.jpg",
+    "target": "cta.webp",
+    "before": 99321,
+    "after": 37390
+  },
+  {
+    "source": "glam.jpg",
+    "target": "glam.webp",
+    "before": 206428,
+    "after": 65808
+  },
+  {
+    "source": "graduation.jpg",
+    "target": "graduation.webp",
+    "before": 1909863,
+    "after": 101448
+  },
+  {
+    "source": "hero-1.jpg",
+    "target": "hero-1.webp",
+    "before": 172358,
+    "after": 85556
+  },
+  {
+    "source": "hero-2.jpg",
+    "target": "hero-2.webp",
+    "before": 142103,
+    "after": 71914
+  },
+  {
+    "source": "hero-3.jpg",
+    "target": "hero-3.webp",
+    "before": 401076,
+    "after": 192702
+  },
+  {
+    "source": "hero-4.jpg",
+    "target": "hero-4.webp",
+    "before": 407465,
+    "after": 197090
+  },
+  {
+    "source": "hero-5.jpg",
+    "target": "hero-5.webp",
+    "before": 441229,
+    "after": 220754
+  },
+  {
+    "source": "hero-6.jpg",
+    "target": "hero-6.webp",
+    "before": 399165,
+    "after": 192948
+  },
+  {
+    "source": "hero-v2-1.jpg",
+    "target": "hero-v2-1.webp",
+    "before": 230626,
+    "after": 109706
+  },
+  {
+    "source": "hero-v2-2.jpg",
+    "target": "hero-v2-2.webp",
+    "before": 224069,
+    "after": 107508
+  },
+  {
+    "source": "hero-v2-3.jpg",
+    "target": "hero-v2-3.webp",
+    "before": 210864,
+    "after": 94000
+  },
+  {
+    "source": "hero-v2-4.jpg",
+    "target": "hero-v2-4.webp",
+    "before": 178133,
+    "after": 74498
+  },
+  {
+    "source": "hero-v2-5.jpg",
+    "target": "hero-v2-5.webp",
+    "before": 230626,
+    "after": 109706
+  },
+  {
+    "source": "hero-v2-6.jpg",
+    "target": "hero-v2-6.webp",
+    "before": 61971,
+    "after": 20214
+  },
+  {
+    "source": "private.jpg",
+    "target": "private.webp",
+    "before": 1880850,
+    "after": 99876
+  },
+  {
+    "source": "shower.jpg",
+    "target": "shower.webp",
+    "before": 2184074,
+    "after": 157872
+  },
+  {
+    "source": "vogue.jpg",
+    "target": "vogue.webp",
+    "before": 1936175,
+    "after": 127042
+  },
+  {
+    "source": "vogue1.jpg",
+    "target": "vogue1.webp",
+    "before": 182651,
+    "after": 57516
+  },
+  {
+    "source": "wedding.jpg",
+    "target": "wedding.webp",
+    "before": 1978647,
+    "after": 102094
+  }
+]

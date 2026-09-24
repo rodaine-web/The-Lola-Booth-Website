@@ -54,5 +54,14 @@
         }
       ]
     }
-  ]
+  ],
+  "functions": {
+    "api/media/[id].js": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "LOLA_MEDIA_ORIGIN": "https://api.thelolabooth.com",
+    "LOLA_DEPLOYMENT_ENV": "production"
+  }
 }

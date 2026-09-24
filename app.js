@@ -1,8 +1,15 @@
 (() => {
   "use strict";
-  const API_BASE = String(window.LOLA_API_BASE || (window.LOLA_CONFIG && window.LOLA_CONFIG.apiBase) || "https://api.thelolabooth.com").replace(/\/$/, "");
+  const API_BASE = String(window.LOLA_CONFIG?.apiBase || "").replace(/\/$/, "");
+  const stagingApiReady = (() => { try { const u=new URL(API_BASE); return u.protocol==='https:' && (window.LOLA_CONFIG?.environment==='production' || !['api.thelolabooth.com','admin.thelolabooth.com','thelolabooth.com','www.thelolabooth.com'].includes(u.hostname)); } catch { return false; } })();
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
-  const apiAsset=(p)=>!p?null:(/^https?:\/\//i.test(p)?p:(p.startsWith("/api/")?API_BASE+p:p));
+  const apiAsset=(p)=>{
+    if(!p)return null;
+    const url=new URL(p,API_BASE||location.origin);
+    const match=url.pathname.match(/^\/api\/public\/media\/([0-9a-f-]{36})$/i);
+    if(match&&url.origin===new URL(API_BASE||location.origin).origin){const width=innerWidth<=600?960:1600;return `/api/media/${match[1]}?w=${width}`;}
+    return /^https?:\/\//i.test(p)?p:(p.startsWith('/api/')?API_BASE+p:p);
+  };
   const money=(v,c="USD")=>{ if(v==null||v==="") return ""; if(String(v).toLowerCase().includes("request")) return String(v); const n=Number(v); return Number.isFinite(n)?new Intl.NumberFormat("en-US",{style:"currency",currency:c,maximumFractionDigits:n%1?2:0}).format(n):String(v); };
   const esc=(s)=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
   async function get(path){ const r=await fetch(API_BASE+path,{cache:"no-cache",headers:{Accept:"application/json"}}); if(!r.ok) throw new Error(`${r.status}`); return r.json(); }
@@ -150,18 +157,44 @@
   function captureAttribution(){ const p=new URLSearchParams(location.search); const fields=['utm_source','utm_medium','utm_campaign','utm_content','utm_term']; fields.forEach(k=>{const v=p.get(k); if(v)sessionStorage.setItem(`lola_${k}`,v)}); if(!sessionStorage.getItem('lola_landing_page_url'))sessionStorage.setItem('lola_landing_page_url',location.href); if(document.referrer&&!sessionStorage.getItem('lola_referrer_url'))sessionStorage.setItem('lola_referrer_url',document.referrer); }
   captureAttribution();
 
-  function formPayload(form){ const fd=new FormData(form), obj={}; for(const [k,v] of fd.entries()){ if(k==='marketing_email_opt_in')continue; if(v!==''&&v!=null)obj[k]=v; } obj.marketing_email_opt_in=!!form.querySelector('[name="marketing_email_opt_in"]:checked'); ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(k=>{const v=sessionStorage.getItem(`lola_${k}`);if(v)obj[k]=v}); obj.landing_page_url=sessionStorage.getItem('lola_landing_page_url')||location.href; obj.referrer_url=sessionStorage.getItem('lola_referrer_url')||document.referrer||''; if(obj.guestCount)obj.guestCount=Number(obj.guestCount); obj.website=''; return obj; }
+  function formPayload(form){
+    const fd=new FormData(form), obj={};
+    for(const [key,value] of fd.entries()){
+      if(['marketing_email_opt_in','interestedIn','budgetRange','estimatedGuestCount'].includes(key))continue;
+      if(value!==''&&value!=null)obj[key]=value;
+    }
+    const guests=fd.get('guestCount')||fd.get('estimatedGuestCount');
+    if(guests)obj.guestCount=Number(guests);
+    const names={glam:'The Glam','360':'The 360 Booth',vogue:'The Vogue','audio-guest-book':'The Audio Guest Book'};
+    const interests=fd.getAll('interestedIn').filter(Boolean).map(value=>names[value]||value);
+    const budget=form.querySelector('[name="budgetRange"]');
+    const details=[];
+    if(interests.length)details.push('Interested in: '+interests.join(', '));
+    if(budget?.value)details.push('Budget: '+budget.selectedOptions[0].textContent.trim());
+    obj.message=[String(fd.get('message')||'').trim(),...details].filter(Boolean).join('\n\n');
+    obj.form_id=form.dataset.formId||location.pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/,'')||'public-inquiry';
+    obj.marketing_email_opt_in=!!form.querySelector('[name="marketing_email_opt_in"]:checked');
+    for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term']){const value=sessionStorage.getItem(`lola_${key}`);if(value)obj[key]=value;}
+    obj.landing_page_url=sessionStorage.getItem('lola_landing_page_url')||location.href;
+    obj.referrer_url=sessionStorage.getItem('lola_referrer_url')||document.referrer||'';
+    // Preserve a filled honeypot so the API can reject bot submissions.
+    obj.website=String(fd.get('website')||'');
+    return obj;
+  }
+
   function showFieldErrors(form,errors){ qsa('.field-error',form).forEach(e=>e.remove()); qsa('[aria-invalid="true"]',form).forEach(e=>e.removeAttribute('aria-invalid')); Object.entries(errors||{}).forEach(([name,msgs])=>{const f=form.elements[name]; if(f){f.setAttribute('aria-invalid','true'); const e=document.createElement('div'); e.className='field-error'; e.textContent=(msgs||[])[0]||'Please check this field.'; f.insertAdjacentElement('afterend',e);}}); }
   qsa('form[data-lola-inquiry]').forEach(form=>form.addEventListener('submit',async e=>{
     e.preventDefault(); const status=qs('[data-form-status]',form); showFieldErrors(form,{});
+    if(!stagingApiReady || window.LOLA_CONFIG?.formsEnabled !== true){if(status){status.className='form-status';status.textContent='Staging preview: submissions are disabled until the staging API is connected.';}return;}
     if(!form.reportValidity())return;
     const btn=qs('button[type="submit"]',form), original=btn?.textContent; if(btn){btn.disabled=true;btn.textContent='Sending…'}; if(status){status.className='form-status';status.textContent='';}
-    try{ const r=await fetch(API_BASE+'/api/public/inquiries',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(formPayload(form))}); const data=await r.json().catch(()=>({})); if(!r.ok){if(r.status===400&&data.error?.details?.fieldErrors)showFieldErrors(form,data.error.details.fieldErrors); throw new Error(friendlyInquiryError(r.status,data));} if(status){status.className='form-status success';status.textContent=(data.code==='POSSIBLE_DUPLICATE')?'Thanks, we already have a recent inquiry from you. The LOLA team will follow up soon.':(data.message||'Thank you. Your inquiry was received and the LOLA team will be in touch soon.');} form.reset(); status?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    try{ const r=await fetch(API_BASE+'/api/public/inquiries',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(formPayload(form))}); const data=await r.json().catch(()=>({})); if(!r.ok){if([400,422].includes(r.status)&&data.error?.details?.fieldErrors)showFieldErrors(form,data.error.details.fieldErrors); throw new Error(friendlyInquiryError(r.status,data));} if(status){status.className='form-status success';status.textContent=(data.code==='POSSIBLE_DUPLICATE')?'Thanks, we already have a recent inquiry from you. The LOLA team will follow up soon.':(data.message||'Thank you. Your inquiry was received and the LOLA team will be in touch soon.');} form.reset(); status?.scrollIntoView({behavior:'smooth',block:'nearest'});
     }catch(err){if(status){status.className='form-status error';status.textContent=err.message||'We couldn’t send your inquiry right now. Please try again.';}}
     finally{if(btn){btn.disabled=false;btn.textContent=original;}}
   }));
 
   async function load(){
+    if(!stagingApiReady){document.documentElement.dataset.lolaCms="staging-preview";return;}
     try{
       const site=await get('/api/public/site');
       renderPackages(site.packages||[],site.settings?.show_starting_price!==false);
