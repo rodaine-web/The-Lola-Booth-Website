@@ -58,16 +58,16 @@
       "source": "/pay",
       "headers": [
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self' https://lola-api-production-production.up.railway.app; img-src 'self' data: blob: https://lola-api-production-production.up.railway.app; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://lola-api-production-production.up.railway.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
-        },
-        {
           "key": "Cache-Control",
-          "value": "private, no-store"
+          "value": "no-store"
         },
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: blob: https://api.thelolabooth.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://api.thelolabooth.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     },
@@ -75,16 +75,16 @@
       "source": "/pay/:token",
       "headers": [
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self' https://lola-api-production-production.up.railway.app; img-src 'self' data: blob: https://lola-api-production-production.up.railway.app; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://lola-api-production-production.up.railway.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
-        },
-        {
           "key": "Cache-Control",
-          "value": "private, no-store"
+          "value": "no-store"
         },
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: blob: https://api.thelolabooth.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://api.thelolabooth.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     },
@@ -92,16 +92,16 @@
       "source": "/invoice/:token",
       "headers": [
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self' https://lola-api-production-production.up.railway.app; img-src 'self' data: blob: https://lola-api-production-production.up.railway.app; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://lola-api-production-production.up.railway.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
-        },
-        {
           "key": "Cache-Control",
-          "value": "private, no-store"
+          "value": "no-store"
         },
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: blob: https://api.thelolabooth.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://api.thelolabooth.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     },
@@ -109,16 +109,33 @@
       "source": "/proposal/:token",
       "headers": [
         {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self' https://lola-api-production-production.up.railway.app; img-src 'self' data: blob: https://lola-api-production-production.up.railway.app; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://lola-api-production-production.up.railway.app; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
-        },
-        {
           "key": "Cache-Control",
-          "value": "private, no-store"
+          "value": "no-store"
         },
         {
           "key": "X-Robots-Tag",
-          "value": "noindex, nofollow, noarchive"
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: blob: https://api.thelolabooth.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://api.thelolabooth.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
+        }
+      ]
+    },
+    {
+      "source": "/customer-documents/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: blob: https://api.thelolabooth.com; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: https://api.thelolabooth.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     }
