@@ -23,7 +23,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; connect-src 'self' https://api.thelolabooth.com; img-src 'self' data: https://thelolabooth.com https://api.thelolabooth.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'; upgrade-insecure-requests"
+          "value": "default-src 'self'; connect-src 'self' https://stagingapi.thelolabooth.com; img-src 'self' data: https://staging.thelolabooth.com https://stagingapi.thelolabooth.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'; upgrade-insecure-requests"
         }
       ]
     },
@@ -61,8 +61,8 @@
     }
   },
   "env": {
-    "LOLA_MEDIA_ORIGIN": "https://api.thelolabooth.com",
-    "LOLA_DEPLOYMENT_ENV": "production"
+    "LOLA_MEDIA_ORIGIN": "https://stagingapi.thelolabooth.com",
+    "LOLA_DEPLOYMENT_ENV": "staging"
   },
   "rewrites": [
     {
