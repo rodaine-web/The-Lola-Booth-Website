@@ -72,6 +72,10 @@
     {
       "source": "/proposals/:token",
       "destination": "/proposal?token=:token"
+    },
+    {
+      "source": "/pay/:token",
+      "destination": "/pay?token=:token"
     }
   ]
 }
