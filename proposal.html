@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Your LOLA Proposal | The LOLA Booth</title>
+  <meta name="description" content="Secure LOLA Booth proposal review.">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png">
+  <style>
+    :root{--ivory:#f8f4ec;--white:#fff;--charcoal:#27231f;--muted:#756d63;--gold:#b08950;--line:#ded3c2}
+    *{box-sizing:border-box}body{margin:0;background:var(--ivory);color:var(--charcoal);font-family:Arial,Helvetica,sans-serif}
+    .shell{min-height:100vh}.topbar{position:sticky;top:0;z-index:10;background:rgba(248,244,236,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1180px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:14px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px}.brand img{width:104px;height:54px;object-fit:contain}.brand span{font-family:Georgia,"Times New Roman",serif;font-size:.92rem}
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.btn{appearance:none;border:1px solid var(--charcoal);border-radius:999px;padding:10px 16px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--white);color:var(--charcoal)}
+    .btn.gold{background:var(--gold);border-color:var(--gold);color:white}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .status{max-width:1180px;margin:0 auto;padding:14px 18px 0;color:var(--muted);font-size:.92rem}
+    .viewer{max-width:1040px;margin:18px auto 120px;padding:0 16px}.frame-wrap{background:white;border:1px solid var(--line);box-shadow:0 15px 45px rgba(46,38,29,.08);border-radius:16px;overflow:hidden}
+    iframe{display:block;width:100%;min-height:1200px;border:0;background:white}
+    .accept-card{display:none;max-width:1040px;margin:18px auto;padding:0 16px}.accept-inner{background:white;border:1px solid var(--line);border-radius:16px;padding:22px}
+    .accept-inner h2{font-family:Georgia,"Times New Roman",serif;font-size:1.55rem;margin:0 0 8px}.accept-row{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:14px}
+    label{display:grid;gap:6px;flex:1;min-width:240px;font-size:.85rem;color:var(--muted)}input{font:inherit;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff}
+    .notice{margin-top:10px;color:var(--muted);font-size:.9rem}.error{color:#9c2f2f}.success{color:#2c6b47}
+    .mobile-sticky{display:none;position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid var(--line);padding:10px 14px;z-index:12;gap:10px;align-items:center;justify-content:space-between}.mobile-total{font-weight:700}
+    @media(max-width:700px){.brand span{display:none}.topbar-inner{padding:9px 12px}.actions .secondary{display:none}.viewer{margin-top:10px;padding:0}.frame-wrap{border-radius:0;border-left:0;border-right:0}iframe{min-height:1500px}.accept-card{margin-bottom:90px}.mobile-sticky{display:flex}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/" aria-label="The LOLA Booth home"><img src="/assets/LOLA_Primary_Dark_Transparent.webp" alt="The LOLA Booth"><span>Good people. Better photos.</span></a>
+      <div class="actions">
+        <a class="btn secondary" href="mailto:info@thelolabooth.com?subject=Question%20about%20my%20LOLA%20proposal">Ask a Question</a>
+        <a class="btn" id="downloadBtn" href="#" aria-disabled="true">Download PDF</a>
+        <button class="btn gold" id="acceptTop" type="button" disabled>Accept Proposal</button>
+      </div>
+    </div>
+  </header>
+  <div class="status" id="status">Loading your proposal…</div>
+  <section class="viewer">
+    <div class="frame-wrap"><iframe id="proposalFrame" title="LOLA proposal preview"></iframe></div>
+  </section>
+  <section class="accept-card" id="acceptCard">
+    <div class="accept-inner">
+      <h2>Ready to make it official?</h2>
+      <p id="acceptanceCopy">Enter your name to confirm acceptance of this proposal.</p>
+      <div class="accept-row">
+        <label>Your full name<input id="acceptName" autocomplete="name" maxlength="160" placeholder="Full name"></label>
+        <button class="btn gold" id="acceptBtn" type="button">Accept Proposal</button>
+      </div>
+      <div class="notice" id="acceptNotice"></div>
+    </div>
+  </section>
+</div>
+<div class="mobile-sticky" id="mobileSticky">
+  <span class="mobile-total" id="mobileTotal">Proposal</span>
+  <button class="btn gold" id="acceptMobile" type="button" disabled>Accept</button>
+</div>
+<script>
+(() => {
+  "use strict";
+  const API="https://api.thelolabooth.com";
+  const params=new URLSearchParams(location.search);
+  const token=params.get("token")||location.pathname.split("/").filter(Boolean).pop();
+  const statusEl=document.getElementById("status");
+  const frame=document.getElementById("proposalFrame");
+  const download=document.getElementById("downloadBtn");
+  const acceptCard=document.getElementById("acceptCard");
+  const acceptCopy=document.getElementById("acceptanceCopy");
+  const acceptName=document.getElementById("acceptName");
+  const acceptNotice=document.getElementById("acceptNotice");
+  const acceptButtons=[document.getElementById("acceptTop"),document.getElementById("acceptBtn"),document.getElementById("acceptMobile")];
+  const mobileTotal=document.getElementById("mobileTotal");
+  let proposal=null;
+
+  const money=v=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(v||0));
+  const canAccept=()=>proposal&&["SENT","VIEWED"].includes(proposal.status);
+
+  function setAcceptState(){
+    const enabled=canAccept();
+    acceptCard.style.display=enabled?"block":"none";
+    acceptButtons.forEach(b=>b.disabled=!enabled);
+    if(proposal?.status==="ACCEPTED"){
+      statusEl.textContent="This proposal has been accepted.";
+      statusEl.className="status success";
+    }
+  }
+
+  async function load(){
+    if(!token){statusEl.textContent="This proposal link is incomplete.";statusEl.className="status error";return;}
+    try{
+      const [dataRes,previewRes]=await Promise.all([
+        fetch(`${API}/api/public/proposals/${encodeURIComponent(token)}`,{headers:{Accept:"application/json"},cache:"no-store"}),
+        fetch(`${API}/api/public/proposals/${encodeURIComponent(token)}/preview`,{headers:{Accept:"text/html"},cache:"no-store"})
+      ]);
+      if(!dataRes.ok||!previewRes.ok)throw new Error("This proposal is unavailable or the secure link has expired.");
+      const data=await dataRes.json();
+      proposal=data.proposal;
+      if(data.acceptanceWording)acceptCopy.textContent=data.acceptanceWording;
+      const html=await previewRes.text();
+      frame.srcdoc=html;
+      download.href=`${API}/api/public/proposals/${encodeURIComponent(token)}/pdf`;
+      download.removeAttribute("aria-disabled");
+      statusEl.textContent=[proposal.proposal_number,proposal.event_name||proposal.event_type,proposal.status].filter(Boolean).join(" · ");
+      mobileTotal.textContent=`${proposal.proposal_number||"Proposal"} · ${money(proposal.total||proposal.pricing_snapshot?.total)}`;
+      setAcceptState();
+    }catch(err){
+      statusEl.textContent=err.message||"We could not load this proposal.";
+      statusEl.className="status error";
+      frame.style.display="none";
+    }
+  }
+
+  async function accept(){
+    if(!canAccept())return;
+    if(!acceptName.value.trim()){acceptNotice.textContent="Please enter your full name.";acceptNotice.className="notice error";acceptName.focus();return;}
+    acceptButtons.forEach(b=>b.disabled=true);acceptNotice.textContent="Confirming acceptance…";acceptNotice.className="notice";
+    try{
+      const r=await fetch(`${API}/api/public/proposals/${encodeURIComponent(token)}/accept`,{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({acceptedByName:acceptName.value.trim()})});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok)throw new Error(data?.error?.message||"We could not accept this proposal.");
+      proposal={...proposal,...data.proposal,status:"ACCEPTED"};
+      acceptNotice.textContent="Accepted. Thank you. The LOLA team will follow up with your next steps.";
+      acceptNotice.className="notice success";
+      setAcceptState();
+    }catch(err){
+      acceptNotice.textContent=err.message||"We could not accept this proposal.";
+      acceptNotice.className="notice error";
+      acceptButtons.forEach(b=>b.disabled=false);
+    }
+  }
+
+  document.getElementById("acceptTop").addEventListener("click",()=>{acceptCard.scrollIntoView({behavior:"smooth",block:"center"});acceptName.focus();});
+  document.getElementById("acceptMobile").addEventListener("click",()=>{acceptCard.scrollIntoView({behavior:"smooth",block:"center"});acceptName.focus();});
+  document.getElementById("acceptBtn").addEventListener("click",accept);
+  load();
+})();
+</script>
+</body>
+</html>
