@@ -412,8 +412,8 @@ gtag('config','G-CJBCQ9FYL1');
 
   <aside class="contact-sidebar">
     <p class="eyebrow" data-cms-copy="contact.029">Let’s Talk</p>
-    <h2 data-cms-copy="contact.030">Tell us enough to get started.</h2>
-    <p data-cms-copy="contact.031">Share the basics and we’ll follow up with availability, recommendations, and next steps. If you are not sure which experience fits, that is completely fine.</p>
+    <h2 data-cms-copy="contact.030">Start the conversation.</h2>
+    <p data-cms-copy="contact.031">Have a general question, need a quote, or want to explore a partnership or collaboration? Send us a message and the LOLA team will follow up.</p>
 
     <div class="contact-info">
       <div class="contact-info-card">
@@ -440,9 +440,9 @@ gtag('config','G-CJBCQ9FYL1');
 
   <div class="contact-form-wrap">
     <div class="contact-form-head">
-      <p class="eyebrow" data-cms-copy="contact.036">Event Inquiry</p>
-      <h2 data-cms-copy="contact.037">What are we celebrating?</h2>
-      <p data-cms-copy="contact.038">Fields marked with * are required.</p>
+      <p class="eyebrow" data-cms-copy="contact.036">Contact Us</p>
+      <h2 data-cms-copy="contact.037">How can we help?</h2>
+      <p data-cms-copy="contact.038">Tell us why you’re reaching out and leave us a message. Fields marked with * are required.</p>
     </div>
 
     <!-- IMPORTANT:
@@ -450,8 +450,9 @@ gtag('config','G-CJBCQ9FYL1');
          Do not remove data-lola-inquiry, data-event-type-select, data-experience-select,
          the honeypot field, or data-form-status without updating the backend integration. -->
     <form class="form" data-lola-inquiry="true" novalidate="novalidate">
-      <div class="form-grid">
+      <input type="hidden" name="formKind" value="CONTACT">
 
+      <div class="form-grid">
         <div>
           <label for="contact-first">First Name *</label>
           <input id="contact-first" maxlength="80" name="firstName" required="">
@@ -468,92 +469,42 @@ gtag('config','G-CJBCQ9FYL1');
         </div>
 
         <div>
-          <label for="contact-phone">Phone *</label>
-          <input id="contact-phone" maxlength="40" name="phone" required="" type="tel">
+          <label for="contact-phone">Phone</label>
+          <input id="contact-phone" maxlength="40" name="phone" type="tel">
         </div>
 
         <div>
-          <label for="contact-date">Event Date *</label>
-          <input id="contact-date" name="eventDate" required="" type="date">
+          <label for="contact-company">Company / Organization</label>
+          <input id="contact-company" maxlength="160" name="company" placeholder="Optional">
         </div>
 
         <div>
-          <label for="contact-type">Event Type *</label>
-          <select data-event-type-select="" id="contact-type" name="eventType" required="">
-            <option value="">Select event type</option>
-            <option>Wedding</option>
-            <option>Birthday</option>
-            <option>Corporate Event</option>
-            <option>Brand Activation</option>
-            <option>Bridal Shower</option>
-            <option>Baby Shower</option>
-            <option>Graduation</option>
-            <option>Private Event</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="contact-city">City *</label>
-          <input id="contact-city" maxlength="100" name="city" required="">
-        </div>
-
-        <div>
-          <label for="contact-state">State *</label>
-          <input id="contact-state" maxlength="40" name="state" placeholder="e.g. IL" required="">
-        </div>
-
-        <div>
-          <label for="contact-exp">Primary Experience</label>
-          <select data-experience-select="" id="contact-exp" name="preferredExperienceId">
-            <option value="">Not sure yet</option>
-          </select>
-          <div class="form-note">Choose an experience, or let us recommend one.</div>
-        </div>
-
-        <div>
-          <label for="contact-venue">Venue</label>
-          <input id="contact-venue" maxlength="160" name="venueName" placeholder="If known">
-        </div>
-
-        <div>
-          <label for="contact-guests">Estimated Guest Count</label>
-          <input id="contact-guests" min="1" max="5000" name="guestCount" type="number" placeholder="e.g. 150">
-        </div>
-
-        <div>
-          <label for="contact-budget">Budget Range</label>
-          <select id="contact-budget" name="budgetRange">
-            <option value="">Prefer not to say</option>
-            <option value="under-750">Under $750</option>
-            <option value="750-1250">$750–$1,250</option>
-            <option value="1250-2000">$1,250–$2,000</option>
-            <option value="2000-3500">$2,000–$3,500</option>
-            <option value="3500-plus">$3,500+</option>
+          <label for="contact-topic">Reason for Contact *</label>
+          <select id="contact-topic" name="topic" required="">
+            <option value="">Select a reason</option>
+            <option value="General inquiry">General Inquiry</option>
+            <option value="Request a quote">Request a Quote</option>
+            <option value="Partnership opportunity">Partnership Opportunity</option>
+            <option value="Corporate / brand collaboration">Corporate / Brand Collaboration</option>
+            <option value="Vendor / venue partnership">Vendor / Venue Partnership</option>
+            <option value="Press or media">Media / Press</option>
+            <option value="Careers / employment">Careers / Employment</option>
+            <option value="Existing booking question">Existing Booking Support</option>
+            <option value="Other">Other</option>
           </select>
         </div>
       </div>
 
       <div style="margin-top:18px">
-        <label>Interested In</label>
-        <div class="check-grid">
-          <label class="check-option"><input type="checkbox" name="interestedIn" value="glam"><span>The Glam</span></label>
-          <label class="check-option"><input type="checkbox" name="interestedIn" value="360"><span>The 360 Booth</span></label>
-          <label class="check-option"><input type="checkbox" name="interestedIn" value="vogue"><span>The Vogue</span></label>
-          <label class="check-option"><input type="checkbox" name="interestedIn" value="audio-guest-book"><span>The Audio Guest Book</span></label>
-        </div>
-        <div class="form-note">Optional. Select any that interest you.</div>
-      </div>
-
-      <div style="margin-top:18px">
-        <label for="contact-message">Tell us about your event</label>
-        <textarea id="contact-message" maxlength="2500" name="message" placeholder="Tell us about the event, the mood, any must-haves, or anything unusual we should know."></textarea>
+        <label for="contact-message">Message *</label>
+        <textarea id="contact-message" maxlength="3000" name="message" required="" placeholder="How can we help?"></textarea>
       </div>
 
       <input aria-hidden="true" autocomplete="off" class="hp-field" name="website" tabindex="-1">
 
-      <button class="btn dark" style="margin-top:18px" type="submit">Send Inquiry →</button>
+      <button class="btn dark" style="margin-top:18px" type="submit">Send Message →</button>
       <div aria-live="polite" class="form-status" data-form-status=""></div>
+      <p class="form-note">We typically respond within 1 business day.</p>
     </form>
   </div>
 
