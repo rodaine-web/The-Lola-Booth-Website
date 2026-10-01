@@ -67,7 +67,11 @@
   "rewrites": [
     {
       "source": "/proposal/:token",
-      "destination": "/proposal.html?token=:token"
+      "destination": "/proposal?token=:token"
+    },
+    {
+      "source": "/proposals/:token",
+      "destination": "/proposal?token=:token"
     }
   ]
 }
