@@ -1,7 +1,18 @@
 (() => {
   "use strict";
   const API_BASE = String(window.LOLA_CONFIG?.apiBase || "").replace(/\/$/, "");
-  const stagingApiReady = (() => { try { const u=new URL(API_BASE); return u.protocol==='https:' && (window.LOLA_CONFIG?.environment==='production' || !['api.thelolabooth.com','admin.thelolabooth.com','thelolabooth.com','www.thelolabooth.com'].includes(u.hostname)); } catch { return false; } })();
+  const isStaging = window.LOLA_CONFIG?.environment === 'staging';
+  const stagingApiReady = (() => {
+    try {
+      const u = new URL(API_BASE);
+      if (u.protocol !== 'https:') return false;
+      return isStaging
+        ? u.hostname === 'stagingapi.thelolabooth.com'
+        : u.hostname === 'api.thelolabooth.com';
+    } catch {
+      return false;
+    }
+  })();
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const apiAsset=(p)=>{
     if(!p)return null;
@@ -210,7 +221,8 @@
   async function load(){
     if(!stagingApiReady){document.documentElement.dataset.lolaCms="staging-preview";return;}
     try{
-      const site=await get('/api/public/site');
+      const site=await get(isStaging ? '/api/public/staging/site' : '/api/public/site');
+      if (isStaging && (site.channel !== 'STAGING' || site.cmsAuthoritative !== true)) throw new Error('Staging channel response required');
       renderPackages(site.packages||[],site.settings?.show_starting_price!==false);
       renderPageContent(site);
       setSiteSettings(site.settings);
