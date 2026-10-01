@@ -70,7 +70,14 @@
     if(!qs('[data-cms-homepage]'))return;
     const c=home.content?.['homepage.hero']?.body;
     if(c){setText(document,'.hero-copy h1',c.headline);setText(document,'.hero-copy p:not(.eyebrow)',c.subheadline);const a=qs('.hero-actions .btn.dark');if(a){if(c.primaryCtaLabel)a.textContent=c.primaryCtaLabel;if(safeUrl(c.primaryCtaUrl))a.href=c.primaryCtaUrl;}}
-    const slides=(home.heroSlides||[]).filter(s=>!s.fallback&&s.image).sort((a,b)=>a.display_order-b.display_order);
+    const cmsSlides=(home.heroSlides||[]).filter(s=>!s.fallback&&s.image).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+    const localFallbacks=[1,2,3,4,5,6].map((n,i)=>({image:`assets/hero-${n}.webp`,alt_text:`LOLA event photograph ${n}`,display_order:100+i,focal_point:{x:50,y:50},localFallback:true}));
+    const slides=[...cmsSlides];
+    for(const fallback of localFallbacks){
+      if(slides.length>=6)break;
+      const basename=fallback.image.split('/').pop().replace(/\.webp$/,'');
+      if(!slides.some(s=>String(s.image||'').includes(basename)))slides.push(fallback);
+    }
     const media=qs('.hero-media');if(!media||!slides.length)return;
     qsa('.hero-slide,.hero-dots',media).forEach(n=>n.remove());
     const fragment=document.createDocumentFragment();
@@ -141,7 +148,14 @@
     }).join('');
     document.dispatchEvent(new Event('lola:gallery-updated'));
   }
-  function renderTestimonials(items){ const grid=qs('[data-cms-testimonials]'); if(!grid)return; const section=grid.closest('[data-cms-testimonial-section]'); if(!items?.length){ if(section)section.hidden=true; grid.innerHTML=''; return; } if(section)section.hidden=false; grid.innerHTML=items.slice(0,6).map(x=>`<div class="card testimonial"><p class="quote">“${esc(x.quote)}”</p><p class="muted">— ${esc(x.client_display_name||'LOLA client')}${x.event_type?`, ${esc(x.event_type)}`:''}</p></div>`).join(''); }
+  function renderTestimonials(items){
+    const grid=qs('[data-cms-testimonials]'); if(!grid)return;
+    const section=grid.closest('[data-cms-testimonial-section]');
+    const published=(items||[]).filter(x=>x.quote&&x.client_display_name);
+    if(!published.length){ if(section)section.hidden=true; grid.innerHTML=''; return; }
+    if(section)section.hidden=false;
+    grid.innerHTML=published.slice(0,6).map(x=>`<article class="testimonial-card"><div class="testimonial-stars" aria-label="${esc(x.rating||5)} stars">${'★'.repeat(Math.max(1,Math.min(5,Number(x.rating)||5)))}</div><p class="testimonial-quote">“${esc(x.quote)}”</p><div class="testimonial-meta"><strong>${esc(x.client_display_name||'LOLA client')}</strong>${x.event_type?`<span>${esc(x.event_type)}</span>`:''}</div></article>`).join('');
+  }
   function renderFaqs(items){ const box=qs('[data-cms-faqs]'); if(!box)return; box.innerHTML=(items||[]).map(x=>`<details><summary>${esc(x.question)}</summary><p class="muted">${esc(x.answer)}</p></details>`).join(''); }
 
   function friendlyInquiryError(status,data){
