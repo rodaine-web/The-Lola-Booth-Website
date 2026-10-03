@@ -58,10 +58,11 @@
   <span class="mobile-total" id="mobileTotal">Proposal</span>
   <button class="btn gold" id="acceptMobile" type="button" disabled>Accept</button>
 </div>
+<script src="/config.js"></script>
 <script>
 (() => {
   "use strict";
-  const API="https://api.thelolabooth.com";
+  const API=String(window.LOLA_CONFIG?.apiBase||"").replace(/\/$/,"");
   const params=new URLSearchParams(location.search);
   const token=params.get("token")||location.pathname.split("/").filter(Boolean).pop();
   const statusEl=document.getElementById("status");
@@ -89,7 +90,7 @@
   }
 
   async function load(){
-    if(!token){statusEl.textContent="This proposal link is incomplete.";statusEl.className="status error";return;}
+    if(!API||!token){statusEl.textContent="This proposal link is incomplete.";statusEl.className="status error";return;}
     try{
       const [dataRes,previewRes]=await Promise.all([
         fetch(`${API}/api/public/proposals/${encodeURIComponent(token)}`,{headers:{Accept:"application/json"},cache:"no-store"}),
@@ -100,9 +101,22 @@
       proposal=data.proposal;
       if(data.acceptanceWording)acceptCopy.textContent=data.acceptanceWording;
       const html=await previewRes.text();
+      frame.onload=()=>{
+        const preview=frame.contentDocument;
+        if(!preview)return;
+        const resize=()=>{frame.style.height=`${Math.max(preview.body?.scrollHeight||0,preview.documentElement?.scrollHeight||0,1200)}px`;};
+        resize();
+        preview.querySelectorAll("img").forEach(img=>img.addEventListener("load",resize));
+        preview.fonts?.ready.then(resize);
+        preview.querySelectorAll('a[href="#accept"]').forEach(link=>link.addEventListener("click",event=>{
+          event.preventDefault();
+          if(canAccept()){acceptCard.scrollIntoView({behavior:"smooth",block:"center"});acceptName.focus();}
+        }));
+      };
       frame.srcdoc=html;
       download.href=`${API}/api/public/proposals/${encodeURIComponent(token)}/pdf`;
       download.removeAttribute("aria-disabled");
+      if(params.get("download")==="pdf")location.assign(download.href);
       statusEl.textContent=[proposal.proposal_number,proposal.event_name||proposal.event_type,proposal.status].filter(Boolean).join(" · ");
       mobileTotal.textContent=`${proposal.proposal_number||"Proposal"} · ${money(proposal.total||proposal.pricing_snapshot?.total)}`;
       setAcceptState();
