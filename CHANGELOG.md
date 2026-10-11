@@ -1,3 +1,10 @@
+# V1.1.0 — 11 October 2026
+
+- Release approved one-page multi-experience inquiry, owner photos and illustrative add-ons.
+- Load production catalog packages and eligible add-ons.
+- Preserve production CMS, API, payment, indexing and domains; initial proposals require Admin review.
+- Release with qualified Admin V1.1 lifecycle; no new backend migrations.
+
 # Changelog
 
 ## 1.0.0 — 2026-09-24
