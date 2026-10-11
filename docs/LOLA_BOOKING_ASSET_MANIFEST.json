@@ -1,0 +1,81 @@
+{
+  "created": "2026-10-08",
+  "authorization": "Owner authorized generated add-on illustrations in chat",
+  "assets": [
+    {
+      "key": "rush",
+      "file": "assets/booking-addon-rush.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 70219
+    },
+    {
+      "key": "guestbook",
+      "file": "assets/booking-addon-guestbook.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 99584
+    },
+    {
+      "key": "travel",
+      "file": "assets/booking-addon-travel.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 69078
+    },
+    {
+      "key": "audio",
+      "file": "assets/booking-addon-audio.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 77224
+    },
+    {
+      "key": "branding",
+      "file": "assets/booking-addon-branding.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 70711
+    },
+    {
+      "key": "data",
+      "file": "assets/booking-addon-data.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 81628
+    },
+    {
+      "key": "backdrop",
+      "file": "assets/booking-addon-backdrop.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 140720
+    },
+    {
+      "key": "signage",
+      "file": "assets/booking-addon-signage.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 40475
+    },
+    {
+      "key": "prints",
+      "file": "assets/booking-addon-prints.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 117399
+    },
+    {
+      "key": "hours",
+      "file": "assets/booking-addon-hours.jpg",
+      "type": "AI-generated representative illustration",
+      "displayWidth": 800,
+      "bytes": 64751
+    }
+  ],
+  "equipmentPhotos": [
+    "assets/booking-glam.png",
+    "assets/booking-360.png"
+  ],
+  "notes": "Glam and 360 are owner supplied photos. Add-on illustrations do not represent verified physical inventory. Existing Vogue and audio images retained."
+}
