@@ -76,10 +76,14 @@
   let proposal=null;
 
   const money=v=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(Number(v||0));
-  const canAccept=()=>proposal&&["SENT","VIEWED"].includes(proposal.status);
+  const canAccept=()=>proposal&&!proposal.view_only&&["SENT","VIEWED"].includes(proposal.status);
 
   function setAcceptState(){
     const enabled=canAccept();
+    const viewOnly=Boolean(proposal?.view_only);
+    acceptButtons.forEach(b=>b.hidden=viewOnly);
+    document.getElementById("mobileSticky").style.visibility=viewOnly?"hidden":"";
+    if(viewOnly){statusEl.textContent="Proposal copy — for review only. The primary client receives the acceptance link.";statusEl.className="status";}
     acceptCard.style.display=enabled?"block":"none";
     acceptButtons.forEach(b=>b.disabled=!enabled);
     if(proposal?.status==="ACCEPTED"){
