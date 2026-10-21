@@ -1,5 +1,13 @@
 # V1.1.0 — 11 October 2026
 
+## Agreement-first payment compatibility — 2026-10-20
+
+- Preserve the existing payment-page design while redirecting unsigned bookings to their issued agreement.
+- Use API-calculated first-payment, installment, balance-deadline and paid-in-full options.
+- Port the exact payment viewer qualified on the isolated staging website with Admin commit a75111104f9913da73dd0b9043e17196938ed867; retain production runtime configuration and all other website pages.
+- Validation: all 17 website tests pass, including four new payment-entry behavior tests.
+
+
 - Release approved one-page multi-experience inquiry, owner photos and illustrative add-ons.
 - Load production catalog packages and eligible add-ons.
 - Preserve production CMS, API, payment, indexing and domains; initial proposals require Admin review.
