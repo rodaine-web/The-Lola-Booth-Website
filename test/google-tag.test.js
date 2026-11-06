@@ -64,10 +64,10 @@ async function submit(kind,{ok=true,inquiryStatus='CREATED_LEAD',valid=true}={})
  let handler;
  form.addEventListener=(_,fn)=>handler=fn;
  const selectors=s=>s.includes('status')?status:s.includes('submit')?button:{checked:false};
- const context={window,crypto:{randomUUID:()=> 'qa-random-submission'},URLSearchParams,FormData:function(){return [];},Map,location:{origin:'https://www.thelolabooth.com',pathname:'/availability'},document:{referrer:''},sessionStorage:{getItem:()=>null},fetch:async()=>({ok,status:ok?201:500,json:async()=>({inquiryStatus})}),form,el:selectors,catalog:{},chosen:new Map([['glam',{packageId:'qa-package'}]]),addons:new Map(),busy:false,ready:true,submissionId:'qa-random-submission',base:'https://api.example.invalid',renderExperiences(){},renderAddons(){},summary(){},qsa:()=>[form],qs:selectors,showFieldErrors(){},stagingApiReady:true,API_BASE:'https://api.example.invalid',formPayload:()=>({}),friendlyInquiryError:()=> 'Submission failed'};
+ const context={window,crypto:{randomUUID:()=> 'qa-random-submission'},URLSearchParams,FormData:function(){return [];},Map,location:{origin:'https://www.thelolabooth.com',pathname:'/availability'},document:{referrer:''},sessionStorage:{getItem:()=>null},fetch:async()=>({ok,status:ok?201:500,json:async()=>({inquiryStatus})}),form,el:selectors,catalog:{},chosen:new Map([['glam',{packageId:'qa-package'}]]),addons:new Map(),busy:false,ready:true,submissionId:'qa-random-submission',base:'https://api.example.invalid',renderExperiences(){},renderAddons(){},updateMode(){},business:()=>false,submitLabel:()=> 'Submit Request →',summary(){},qsa:()=>[form],qs:selectors,showFieldErrors(){},stagingApiReady:true,API_BASE:'https://api.example.invalid',formPayload:()=>({}),friendlyInquiryError:()=> 'Submission failed'};
  const source=fs.readFileSync(new URL('../'+(kind==='booking'?'booking.js':'app.js'),import.meta.url),'utf8');
  const start=source.indexOf(kind==='booking'?" form.addEventListener('submit',":"  qsa('form[data-lola-inquiry]");
- const end=source.indexOf(kind==='booking'?'\n renderExperiences();renderAddons();loadCatalog();':'\n\n  async function load()',start);
+ const end=source.indexOf(kind==='booking'?'\n updateMode();renderExperiences();renderAddons();loadCatalog();':'\n\n  async function load()',start);
  assert.ok(start>=0&&end>start);
  vm.runInNewContext(source.slice(start,end),context);
  await handler({preventDefault(){}});

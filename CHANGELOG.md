@@ -1,3 +1,12 @@
+# V1.2.0 — 6 November 2026
+
+- Separate Individual bookings from Business quote requests. Businesses select corporate event details, experiences and optional add-ons without package tiers or public prices.
+- Restore the original Individual package layout, Custom options and Most Popular badge. Business packages page shows experiences/add-ons with Request a Quote links.
+- Restore Home on the packages page and keep audience-specific navigation CTAs in order.
+- Supply add-on images and improve 360/Vogue image framing in the booking form.
+- Selectively promote the staging website qualified with Admin revision 26fde5894263a5f6e44371f1f055895eeed3fd67. Production configuration, analytics, SEO, Events/Gallery publication and unrelated pages are preserved.
+- Companion Admin release calculates proposal prices automatically, removes included add-ons, supports optional price edits and manual travel, and discloses applicable tax on taxable products such as prints.
+
 # V1.1.0 — 11 October 2026
 
 ## Agreement-first payment compatibility — 2026-10-20
