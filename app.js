@@ -56,7 +56,7 @@
     const slug=location.pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/,'')||'home';
     const page=site.content?.['page.'+(slug==='index'?'home':slug)]?.body;
     if(page){
-      qsa('[data-cms-copy]').forEach(n=>{const copy=page.copy?.[n.dataset.cmsCopy];if(!copy)return;n.innerHTML=safeCopy(copy.html);if(copy.href&&n.tagName==='A'&&safeUrl(copy.href))n.href=copy.href;});
+      qsa('[data-cms-copy]').forEach(n=>{if(n.closest('[data-fixed-navigation]'))return;const copy=page.copy?.[n.dataset.cmsCopy];if(!copy)return;n.innerHTML=safeCopy(copy.html);if(copy.href&&n.tagName==='A'&&safeUrl(copy.href))n.href=copy.href;});
       if(page.title)document.title=page.title;
       for(const [key,value] of Object.entries(page.seo||{})){
         if(key==='canonical'){const n=qs('link[rel="canonical"]');if(n&&safeUrl(value))n.href=value;continue;}
@@ -109,7 +109,7 @@
     }
   }
   function renderPackages(items,showPrice=true){
-    if(window.lolaVersionedPricingActive)return;
+    if(window.lolaVersionedPricingActive||qs('[data-package-audience]'))return;
     const byKey=new Map(items.filter(x=>x.website_key).map(x=>[x.website_key,x]));
     // Legacy payloads have no experience relationship; do not overwrite approved fallback.
     if(items.length&&!byKey.size)throw new Error('CMS package migration is not available yet');
