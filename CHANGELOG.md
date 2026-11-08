@@ -1,3 +1,8 @@
+# V1.2.1 — 8 November 2026
+
+- Restore the staging-qualified experience tab script omitted from the previous website release, so Individual customers can view Glam, 360, Vogue and Audio pricing and matching add-ons.
+- Add regression checks for shipped page scripts, all four tab selections and experience deep links.
+
 # V1.2.0 — 6 November 2026
 
 - Separate Individual bookings from Business quote requests. Businesses select corporate event details, experiences and optional add-ons without package tiers or public prices.
