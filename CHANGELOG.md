@@ -1,3 +1,7 @@
+## 1.3.0 — 2026-11-10
+
+Approved redesign from staging: CMS-driven experiences, packages and home sections; prominent Celebrations/Business category; corporate request-a-quote preferences; natural event imagery. Production API, analytics, payment entry, indexing, Events/Gallery publication and existing legal pages preserved.
+
 # V1.2.1 — 8 November 2026
 
 - Restore the staging-qualified experience tab script omitted from the previous website release, so Individual customers can view Glam, 360, Vogue and Audio pricing and matching add-ons.
