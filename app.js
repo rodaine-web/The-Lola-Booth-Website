@@ -1,10 +1,12 @@
 (() => {
   "use strict";
   const API_BASE = String(window.LOLA_CONFIG?.apiBase || "").replace(/\/$/, "");
-  const stagingApiReady = (() => { try { const u=new URL(API_BASE); return u.protocol==='https:' && (window.LOLA_CONFIG?.environment==='production' || !['api.thelolabooth.com','admin.thelolabooth.com','thelolabooth.com','www.thelolabooth.com'].includes(u.hostname)); } catch { return false; } })();
+  const stagingApiReady = (['staging','production'].includes(window.LOLA_CONFIG?.environment)) && ['STAGING','PUBLIC'].includes(window.LOLA_CONFIG?.cmsChannel) && (/^https:\/\//.test(API_BASE)||(/^http:\/\/(localhost|127\.0\.0\.1):[0-9]+$/.test(API_BASE)&&new URL(API_BASE).origin===location.origin));
   const qs=(s,r=document)=>r.querySelector(s), qsa=(s,r=document)=>[...r.querySelectorAll(s)];
   const apiAsset=(p)=>{
     if(!p)return null;
+    // CMS stores the bundled path; the staging website exposes that bundle at /assets.
+    if(p.startsWith('/staging-site/assets/')&&!location.pathname.startsWith('/staging-site/'))return p.replace('/staging-site/assets/','/assets/');
     const url=new URL(p,API_BASE||location.origin);
     const match=url.pathname.match(/^\/api\/public\/media\/([0-9a-f-]{36})$/i);
     if(match&&url.origin===new URL(API_BASE||location.origin).origin){const width=innerWidth<=600?960:1600;return `/api/media/${match[1]}?w=${width}`;}
@@ -30,7 +32,7 @@
   }
   initHero();
 
-  function experienceIdentity(item){ return ['glam','360','vogue','audio'].find(k=>String(item.website_name||item.name||item.slug||'').toLowerCase().includes(k))||''; }
+  function experienceIdentity(item){ return ['glam','360','mirror','vogue','audio'].find(k=>String(item.website_name||item.name||item.slug||'').toLowerCase().includes(k))||''; }
   function safeUrl(value){ try{const u=new URL(value,location.href);return ['https:','http:','mailto:','tel:'].includes(u.protocol)?value:null;}catch{return null;} }
   function safeCopy(value){
     const t=document.createElement('template');t.innerHTML=String(value||'');
@@ -42,46 +44,45 @@
     return t.innerHTML;
   }
   const setText=(root,selector,value)=>{const n=qs(selector,root);if(n&&value!=null)n.textContent=value;};
-  function setSiteSettings(settings){
-    if(!settings)return;
+  function setSiteSettings(settings={}){
     window.LOLA_SITE_SETTINGS=settings;
-    qsa('a[href^="mailto:"],[data-site-email]').forEach(a=>{if(settings.contact_email){if(!a.querySelector('svg'))a.textContent=settings.contact_email;a.href='mailto:'+settings.contact_email;}});
-    qsa('a[href^="tel:"],[data-site-phone]').forEach(node=>{const a=node.tagName==='A'?node:qs('a[href^="tel:"]',node)||node;if(settings.phone){if(!a.querySelector('svg'))a.textContent=settings.phone;if(a.tagName==='A')a.href='tel:+'+settings.phone.replace(/[^0-9]/g,'').replace(/^(?=\d{10}$)/,'1');}});
-    qsa('[data-brand-line]').forEach(n=>{if(settings.brand_line)n.textContent=settings.brand_line;});
-    qsa('[data-site-service-area]').forEach(n=>{if(settings.service_area)n.textContent='Service area: '+settings.service_area;});
-    for(const [name,key] of [['instagram','instagram_url'],['tiktok','tiktok_url']])qsa(`a[href*="${name}.com"]`).forEach(a=>{const url=safeUrl(settings[key]);if(url)a.href=url;});
-    qsa('[data-site-copyright]').forEach(n=>{if(settings.copyright_text)n.textContent=settings.copyright_text;});
+    const bind=(selector,key,update)=>qsa(selector).forEach(n=>{n.hidden=settings[key]==null||settings[key]==='';if(!n.hidden)update(n,settings[key]);});
+    bind('a[href^="mailto:"],[data-site-email]','contact_email',(n,v)=>{if(!n.querySelector('svg'))n.textContent=v;n.href='mailto:'+v;});
+    bind('a[href^="tel:"],[data-site-phone]','phone',(n,v)=>{const a=n.tagName==='A'?n:qs('a',n)||n;a.textContent=v;if(a.tagName==='A')a.href='tel:+'+String(v).replace(/[^0-9]/g,'').replace(/^(?=\d{10}$)/,'1');});
+    for(const [selector,key,prefix] of [['[data-brand-line]','brand_line',''],['[data-site-service-area]','service_area','Service area: '],['[data-site-copyright]','copyright_text','']])bind(selector,key,(n,v)=>n.textContent=prefix+v);
+    for(const [name,key] of [['instagram','instagram_url'],['tiktok','tiktok_url']])bind(`a[href*="${name}.com"]`,key,(n,v)=>{const url=safeUrl(v);n.hidden=!url;if(url)n.href=url;});
+  }
+  const approvedExperienceImages={glam:'glam.jpg','360':'booth360.jpg',vogue:'vogue.jpg',audio:'audio.jpg'};
+  function applyImage(img,image,fallback){
+    if(!img)return;
+    const original=img.dataset.approvedFallback||img.getAttribute('src');
+    img.dataset.approvedFallback=fallback||original||'';
+    img.onerror=()=>{img.onerror=null;if(img.dataset.approvedFallback)img.src=apiAsset(img.dataset.approvedFallback);};
+    img.src=apiAsset(image||img.dataset.approvedFallback)||'';
   }
   function renderPageContent(site){
-    const slug=location.pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/,'')||'home';
-    const page=site.content?.['page.'+(slug==='index'?'home':slug)]?.body;
-    if(page){
-      qsa('[data-cms-copy]').forEach(n=>{if(n.closest('[data-fixed-navigation]'))return;const copy=page.copy?.[n.dataset.cmsCopy];if(!copy)return;n.innerHTML=safeCopy(copy.html);if(copy.href&&n.tagName==='A'&&safeUrl(copy.href))n.href=copy.href;});
-      if(page.title)document.title=page.title;
-      for(const [key,value] of Object.entries(page.seo||{})){
-        if(key==='canonical'){const n=qs('link[rel="canonical"]');if(n&&safeUrl(value))n.href=value;continue;}
-        const n=qsa('meta[name],meta[property]').find(n=>n.name===key||n.getAttribute('property')===key);if(n)n.content=value;
-      }
-    }
-    const media=site.content?.['website.media']?.body||{};
-    qsa('[data-cms-media]').forEach(n=>{const src=media[n.dataset.cmsMedia];if(src&&safeUrl(apiAsset(src)))n.src=apiAsset(src);});
+    const tail=location.pathname.split('/').filter(Boolean).pop()?.replace(/\.html$/,'');
+    const slug=!tail||tail==='index'||tail==='staging-site'?'home':tail;
+    const copies=new Map((site.pageItems||[]).filter(x=>x.page_slug===slug).map(x=>[x.slot_key,x]));
+    qsa('[data-cms-copy]').forEach(n=>{if(n.closest('[data-fixed-navigation]'))return;const copy=copies.get(n.dataset.cmsCopy);n.hidden=!copy;if(!copy)return;n.innerHTML=safeCopy(copy.html);n.style.order=String(copy.display_order);if(n.tagName==='A'&&copy.href&&safeUrl(copy.href))n.href=copy.href;});
+    // Reorder managed siblings in their existing layout slots without moving unrelated markup.
+    const parents=new Set(qsa('[data-cms-copy]').filter(n=>!n.closest('[data-fixed-navigation]')).map(n=>n.parentElement));
+    for(const parent of parents){const nodes=[...parent.children].filter(n=>n.hasAttribute('data-cms-copy'));if(nodes.length<2)continue;const anchors=nodes.map(n=>{const marker=document.createComment('CMS slot');n.before(marker);return marker;});nodes.sort((a,b)=>(copies.get(a.dataset.cmsCopy)?.display_order??0)-(copies.get(b.dataset.cmsCopy)?.display_order??0));anchors.forEach((anchor,i)=>anchor.replaceWith(nodes[i]));}
+    const page=site.content?.['page.'+slug];
+    document.title=page?.title||'LOLA Staging';
+    for(const [selector,value] of [['meta[name="description"]',page?.seo_description],['meta[property="og:title"]',page?.seo_title],['meta[property="og:description"]',page?.seo_description],['meta[name="twitter:title"]',page?.seo_title],['meta[name="twitter:description"]',page?.seo_description]]){const n=qs(selector);if(n)n.content=value||'';}
+    const media=new Map((site.media||[]).map(x=>[x.entity_key,x]));
+    qsa('[data-cms-media]').forEach(n=>{const item=media.get(n.dataset.cmsMedia);n.hidden=!item;if(item){applyImage(n,item.url);if(item.alt_text)n.alt=item.alt_text;}});
   }
   function renderHero(home){
     if(!qs('[data-cms-homepage]'))return;
     const c=home.content?.['homepage.hero']?.body;
     if(c){setText(document,'.hero-copy h1',c.headline);setText(document,'.hero-copy p:not(.eyebrow)',c.subheadline);const a=qs('.hero-actions .btn.dark');if(a){if(c.primaryCtaLabel)a.textContent=c.primaryCtaLabel;if(safeUrl(c.primaryCtaUrl))a.href=c.primaryCtaUrl;}}
-    const cmsSlides=(home.heroSlides||[]).filter(s=>!s.fallback&&s.image).sort((a,b)=>(a.display_order||0)-(b.display_order||0));
-    const localFallbacks=[1,2,3,4,5,6].map((n,i)=>({image:`assets/hero-${n}.webp`,alt_text:`LOLA event photograph ${n}`,display_order:100+i,focal_point:{x:50,y:50},localFallback:true}));
-    const slides=[...cmsSlides];
-    for(const fallback of localFallbacks){
-      if(slides.length>=6)break;
-      const basename=fallback.image.split('/').pop().replace(/\.webp$/,'');
-      if(!slides.some(s=>String(s.image||'').includes(basename)))slides.push(fallback);
-    }
-    const media=qs('.hero-media');if(!media||!slides.length)return;
+    const slides=(home.heroSlides||[]).filter(s=>!s.fallback&&(s.image||s.fallback_image)).sort((a,b)=>a.display_order-b.display_order);
+    const media=qs('.hero-media');if(!media)return;media.hidden=!slides.length;
     qsa('.hero-slide,.hero-dots',media).forEach(n=>n.remove());
     const fragment=document.createDocumentFragment();
-    slides.forEach((s,i)=>{const n=document.createElement('div');n.className='hero-slide'+(i===0?' active':'');n.style.backgroundImage=`url("${apiAsset(s.image)}")`;n.style.backgroundPosition=`${s.focal_point?.x??50}% ${s.focal_point?.y??50}%`;n.role='img';n.setAttribute('aria-label',s.alt_text||'LOLA event photograph');fragment.append(n);});
+    slides.forEach((s,i)=>{const n=document.createElement('div');n.className='hero-slide'+(i===0?' active':'');n.style.backgroundImage=`url("${apiAsset(s.image||s.fallback_image)}")`;n.style.backgroundPosition=`${s.focal_point?.x??50}% ${s.focal_point?.y??50}%`;const probe=new Image();probe.onerror=()=>{if(s.fallback_image)n.style.backgroundImage=`url("${apiAsset(s.fallback_image)}")`;};probe.src=apiAsset(s.image||s.fallback_image);n.role='img';n.setAttribute('aria-label',s.alt_text||'LOLA event photograph');fragment.append(n);});
     media.prepend(fragment);
     const dots=document.createElement('div');dots.className='hero-dots';dots.innerHTML=slides.map((_,i)=>`<button class="dot" aria-label="Slide ${i+1}"></button>`).join('');media.append(dots);initHero();
   }
@@ -89,7 +90,7 @@
   function fillSelects(experiences,packages,eventTypes){
     qsa('[data-experience-select]').forEach(sel=>{ const current=sel.value; sel.innerHTML='<option value="">Not sure yet</option>'+experiences.map(x=>`<option value="${esc(x.id)}">${esc(x.website_name||x.name)}</option>`).join(''); sel.value=current; });
     qsa('[data-package-select]').forEach(sel=>{ const current=sel.value; sel.innerHTML='<option value="">Not sure yet</option>'+packages.map(x=>`<option value="${esc(x.id)}">${esc(x.website_key?x.website_key.split(':')[0].toUpperCase()+' — '+x.name:x.name)}</option>`).join(''); sel.value=current; });
-    if(eventTypes?.length) qsa('[data-event-type-select]:not([data-business-event-types])').forEach(sel=>{ sel.innerHTML='<option value="">Select event type</option>'+eventTypes.map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('')+'<option value="Other">Other</option>'; });
+    qsa('[data-event-type-select]:not([data-business-event-types])').forEach(sel=>{ sel.innerHTML='<option value="">Select event type</option>'+eventTypes.filter(x=>!(/corporate/i.test(x.name))).map(x=>`<option value="${esc(x.name)}">${esc(x.name)}</option>`).join('')+'<option value="Other">Other</option>'; });
   }
 
   function renderExperiences(items,content={}){
@@ -100,11 +101,11 @@
       for(const x of [...items].sort((a,b)=>a.display_order-b.display_order)){
         const key=experienceIdentity(x),node=qsa('[data-experience-key]',grid).find(n=>n.dataset.experienceKey===key);if(!node)continue;
         node.hidden=false;grid.append(node);
-        const d=details[key]||{};
+        const d={pageLabel:x.website_label,heading:x.website_heading,kicker:x.website_kicker};
         setText(node,home?'h3':'.eyebrow',home?(x.website_name||x.name):d.pageLabel);
         setText(node,home?'p':'.muted',home?x.website_short_description:x.website_long_description);
         if(!home){setText(node,'h2',d.heading);setText(node,'.experience-kicker',d.kicker);const list=qs('ul',node);if(list&&Array.isArray(x.features))list.innerHTML=x.features.map(v=>`<li>${esc(v)}</li>`).join('');}
-        const img=qs('img',node);if(img&&x.image&&safeUrl(apiAsset(x.image)))img.src=apiAsset(x.image);
+        const img=qs('img',node);applyImage(img,x.image,'/staging-site/assets/'+approvedExperienceImages[key]);
       }
     }
   }
@@ -137,8 +138,8 @@
     for(const grid of qsa('[data-cms-events="home"],.event-overview-grid')){
       const home=grid.dataset.cmsEvents==='home',order=content['events.home_order']?.body||[];
       qsa('[data-event-key]',grid).forEach(n=>n.hidden=true);
-      const sorted=[...items].sort((a,b)=>home?((order.find(x=>x.slug===a.slug)?.order??a.display_order)-(order.find(x=>x.slug===b.slug)?.order??b.display_order)):a.display_order-b.display_order);
-      for(const x of sorted){const n=qsa('[data-event-key]',grid).find(n=>n.dataset.eventKey===x.slug);if(!n)continue;n.hidden=false;grid.append(n);setText(n,home?'h3':'h2',x.name);setText(n,'p',home?(order.find(e=>e.slug===x.slug)?.description||x.short_description):x.short_description);const img=qs('img',n);if(img&&x.image)img.src=apiAsset(x.image);}
+      const sorted=[...items].sort((a,b)=>a.display_order-b.display_order);
+      for(const x of sorted){const n=qsa('[data-event-key]',grid).find(n=>n.dataset.eventKey===x.slug);if(!n)continue;n.hidden=false;grid.append(n);setText(n,home?'h3':'h2',x.name);setText(n,'p',home?(x.home_description||x.short_description):x.short_description);const img=qs('img',n);applyImage(img,x.image,x.fallback_image);}
     }
   }
   function renderGallery(items){
@@ -149,21 +150,15 @@
     }).join('');
     document.dispatchEvent(new Event('lola:gallery-updated'));
   }
-  function renderTestimonials(items){
-    const grid=qs('[data-cms-testimonials]'); if(!grid)return;
-    const section=grid.closest('[data-cms-testimonial-section]');
-    const published=(items||[]).filter(x=>x.quote&&x.client_display_name);
-    if(!published.length){ if(section)section.hidden=true; grid.innerHTML=''; return; }
-    if(section)section.hidden=false;
-    grid.innerHTML=published.slice(0,6).map(x=>`<article class="testimonial-card"><div class="testimonial-stars" aria-label="${esc(x.rating||5)} stars">${'★'.repeat(Math.max(1,Math.min(5,Number(x.rating)||5)))}</div><p class="testimonial-quote">“${esc(x.quote)}”</p><div class="testimonial-meta"><strong>${esc(x.client_display_name||'LOLA client')}</strong>${x.event_type?`<span>${esc(x.event_type)}</span>`:''}</div></article>`).join('');
-  }
+  function renderTestimonials(items){const grid=qs('[data-cms-testimonials]');if(!grid)return;const section=grid.closest('[data-cms-testimonial-section]');if(section)section.hidden=!items?.length;grid.innerHTML=(items||[]).map(x=>`<article class="testimonial-card" data-cms-record-id="${esc(x.id)}"><div class="testimonial-stars" aria-label="${esc(x.rating||5)} stars">${'★'.repeat(Math.max(0,Math.min(5,Number(x.rating)||5)))}</div>${x.client_photo?`<img src="${esc(apiAsset(x.client_photo))}" alt="${esc(x.client_display_name)}" width="64" height="64">`:''}<p class="testimonial-quote">“${esc(x.quote)}”</p><div class="testimonial-meta"><strong>${esc(x.client_display_name)}</strong><span>${esc(x.event_type)}</span></div></article>`).join('');}
   function renderFaqs(items){ const box=qs('[data-cms-faqs]'); if(!box)return; box.innerHTML=(items||[]).map(x=>`<details><summary>${esc(x.question)}</summary><p class="muted">${esc(x.answer)}</p></details>`).join(''); }
 
   function friendlyInquiryError(status,data){
     const code=data.error?.code;
     if(status===400&&code==='SPAM_DETECTED')return 'We could not send that message. Please refresh the page and try again.';
     if(status===400)return 'Please check the highlighted details and try again.';
-    if(status===403||code==='CORS_REJECTED')return 'This booking form is not enabled for this website yet. Please email info@thelolabooth.com.';
+    if(status===401)return 'Sign in to the staging Admin portal in this browser before submitting a QA inquiry.';
+    if(status===403||code==='CORS_REJECTED')return 'This form is not enabled for this website yet. Please email info@thelolabooth.com.';
     if(status===429)return 'Too many requests came through at once. Please wait a minute and try again.';
     if(status>=500)return 'LOLA could not receive your inquiry right now. Please email info@thelolabooth.com.';
     return data.error?.message||'We could not send your inquiry right now. Please try again.';
@@ -174,6 +169,8 @@
 
   function formPayload(form){
     const fd=new FormData(form), obj={};
+    obj.formKind=form.dataset.formKind||"BOOKING";
+    obj.submissionId=form.dataset.submissionId||(form.dataset.submissionId=crypto.randomUUID());
     for(const [key,value] of fd.entries()){
       if(['marketing_email_opt_in','interestedIn','budgetRange','estimatedGuestCount'].includes(key))continue;
       if(value!==''&&value!=null)obj[key]=value;
@@ -203,8 +200,7 @@
     if(!stagingApiReady || window.LOLA_CONFIG?.formsEnabled !== true){if(status){status.className='form-status';status.textContent='Staging preview: submissions are disabled until the staging API is connected.';}return;}
     if(!form.reportValidity())return;
     const btn=qs('button[type="submit"]',form), original=btn?.textContent; if(btn){btn.disabled=true;btn.textContent='Sending…'}; if(status){status.className='form-status';status.textContent='';}
-    const conversionId=crypto.randomUUID();
-    try{ const r=await fetch(API_BASE+'/api/public/inquiries',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(formPayload(form))}); const data=await r.json().catch(()=>({})); if(!r.ok){if([400,422].includes(r.status)&&data.error?.details?.fieldErrors)showFieldErrors(form,data.error.details.fieldErrors); throw new Error(friendlyInquiryError(r.status,data));} window.lolaTrackLeadConversion?.(data,conversionId); if(status){status.className='form-status success';status.textContent=(data.code==='POSSIBLE_DUPLICATE')?'Thanks, we already have a recent inquiry from you. The LOLA team will follow up soon.':(data.message||'Thank you. Your inquiry was received and the LOLA team will be in touch soon.');} form.reset(); status?.scrollIntoView({behavior:'smooth',block:'nearest'});
+    try{ const r=await fetch(API_BASE+'/api/public/inquiries',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(formPayload(form))}); const data=await r.json().catch(()=>({})); if(!r.ok){if([400,422].includes(r.status)&&data.error?.details?.fieldErrors)showFieldErrors(form,data.error.details.fieldErrors); throw new Error(friendlyInquiryError(r.status,data));} window.lolaTrackLeadConversion?.(data,form.dataset.submissionId); if(status){status.className='form-status success';status.textContent=(data.code==='POSSIBLE_DUPLICATE')?'Thanks, we already have a recent inquiry from you. The LOLA team will follow up soon.':(data.message||'Thank you. Your inquiry was received and the LOLA team will be in touch soon.');} form.reset(); delete form.dataset.submissionId; status?.scrollIntoView({behavior:'smooth',block:'nearest'});
     }catch(err){if(status){status.className='form-status error';status.textContent=err.message||'We couldn’t send your inquiry right now. Please try again.';}}
     finally{if(btn){btn.disabled=false;btn.textContent=original;}}
   }));
@@ -212,7 +208,9 @@
   async function load(){
     if(!stagingApiReady){document.documentElement.dataset.lolaCms="staging-preview";return;}
     try{
-      const site=await get('/api/public/site');
+      const site=await get(window.LOLA_CONFIG?.cmsChannel==='PUBLIC'?'/api/public/site':'/api/public/staging/site');
+      if(site.channel!==(window.LOLA_CONFIG?.cmsChannel||'STAGING')||site.cmsAuthoritative!==true)throw new Error('Staging channel response required');
+      document.documentElement.dataset.lolaCms='rendering';
       renderPackages(site.packages||[],site.settings?.show_starting_price!==false);
       renderPageContent(site);
       setSiteSettings(site.settings);
@@ -224,7 +222,8 @@
       renderFaqs(site.faqs||[]);
       fillSelects(site.experiences||[],site.packages||[],site.eventTypes||[]);
       document.documentElement.dataset.lolaCms='connected';
-    } catch(e){ console.warn('LOLA CMS unavailable; static website fallbacks remain active.',e); document.documentElement.dataset.lolaCms='fallback';
+      window.dispatchEvent(new CustomEvent('lola:site-ready',{detail:site}));
+    } catch(e){ const rendering=document.documentElement.dataset.lolaCms==='rendering';console.warn(rendering?'LOLA staging render failed.':'LOLA CMS unavailable; approved static fallback remains active.',e);document.documentElement.dataset.lolaCms=rendering?'render-error':'fallback';
       // even without API, keep existing event options and inject static experience/package options with no UUIDs omitted at submit
     }
   }

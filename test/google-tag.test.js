@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const code=fs.readFileSync(new URL('../google-tag.js',import.meta.url),'utf8');
 function run(hostname,pathname='/') {
  const scripts=[];
- const window={location:{hostname,pathname}};
+ const window={addEventListener(){},location:{hostname,pathname}};
  const document={head:{appendChild:s=>scripts.push(s)},createElement:()=>({})};
  const context=vm.createContext({window,document});
  vm.runInContext(code,context);
@@ -60,7 +60,7 @@ test('analytics failure cannot break customer submission',()=>{
 });
 async function submit(kind,{ok=true,inquiryStatus='CREATED_LEAD',valid=true}={}) {
  const {window}=run('www.thelolabooth.com');window.LOLA_CONFIG={formsEnabled:true};
- const status={focus(){},scrollIntoView(){}},button={textContent:'Submit'},form={reportValidity:()=>valid,reset(){}};
+ const status={focus(){},scrollIntoView(){}},button={textContent:'Submit'},form={dataset:{submissionId:'qa-random-submission'},reportValidity:()=>valid,reset(){}};
  let handler;
  form.addEventListener=(_,fn)=>handler=fn;
  const selectors=s=>s.includes('status')?status:s.includes('submit')?button:{checked:false};
