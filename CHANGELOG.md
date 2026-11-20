@@ -1,3 +1,9 @@
+## 1.4.0 — 2026-11-20
+
+Owner-approved business experience builder: five independently selectable experiences, compatible optional add-ons, Virtual Booth durations and existing quote workflow. Guest benefit panels align within responsive card rows. Internal prices remain private; Celebration booking, production API/configuration, analytics, indexing, and unpublished Events/Gallery are preserved.
+
+Qualified on staging and local desktop/tablet/mobile with real API and CRM fixtures; production smoke checks use read-only requests.
+
 ## 1.3.0 — 2026-11-10
 
 Approved redesign from staging: CMS-driven experiences, packages and home sections; prominent Celebrations/Business category; corporate request-a-quote preferences; natural event imagery. Production API, analytics, payment entry, indexing, Events/Gallery publication and existing legal pages preserved.
