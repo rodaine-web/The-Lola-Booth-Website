@@ -16,6 +16,7 @@
     // The API distinguishes a newly created lead from duplicate/replayed requests.
     if (result?.inquiryStatus !== 'CREATED_LEAD' || !submissionId || reported.has(submissionId)) return;
     try {
+      window.gtag('event','generate_lead',{send_to:'G-CJBCQ9FYL1',form_type:/availability/.test(window.location.pathname)?'quote_request':'contact'});
       window.gtag('event', 'conversion', {
         send_to: 'AW-18531982704/JcHYCPPztaYdEPC63oRF',
         value: 1.0,
@@ -25,6 +26,12 @@
       reported.add(submissionId);
     } catch { /* Measurement must never block a successful customer submission. */ }
   };
+
+  // Only allowlisted interactions are collected; never field values or contact details.
+  const experiences=new Set(['glam','360','mirror','vogue','virtual','audio']);
+  function selectExperience(key){if(experiences.has(key))try{window.gtag('event','select_experience_'+key,{send_to:'G-CJBCQ9FYL1'});}catch{}}
+  document.addEventListener?.('change',event=>{const el=event.target;if(el?.checked)selectExperience(el.dataset?.businessExperience||el.dataset?.experience);},true);
+  document.addEventListener?.('click',event=>{const el=event.target?.closest?.('[data-package-experience]');if(el)selectExperience(el.dataset.packageExperience);},true);
 
   const script = document.createElement('script');
   script.async = true;

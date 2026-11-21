@@ -44,9 +44,11 @@ test('new lead sends supplied conversion once with no personal information',()=>
  window.lolaTrackLeadConversion({inquiryStatus:'CREATED_LEAD',email:'private@example.invalid'},'random-submission-uuid');
  window.lolaTrackLeadConversion({inquiryStatus:'CREATED_LEAD'},'random-submission-uuid');
  const events=window.dataLayer.filter(x=>x[0]==='event');
- assert.equal(events.length,1);
- assert.equal(events[0][1],'conversion');
- assert.deepEqual(JSON.parse(JSON.stringify(events[0][2])),{send_to:'AW-18531982704/JcHYCPPztaYdEPC63oRF',value:1,currency:'USD',transaction_id:'random-submission-uuid'});
+ assert.equal(events.length,2);
+ assert.equal(events[0][1],'generate_lead');
+ assert.deepEqual(JSON.parse(JSON.stringify(events[0][2])),{send_to:'G-CJBCQ9FYL1',form_type:'quote_request'});
+ assert.equal(events[1][1],'conversion');
+ assert.deepEqual(JSON.parse(JSON.stringify(events[1][2])),{send_to:'AW-18531982704/JcHYCPPztaYdEPC63oRF',value:1,currency:'USD',transaction_id:'random-submission-uuid'});
 });
 test('duplicate, replayed, unknown and failed submissions are not conversions',()=>{
  const {window}=run('www.thelolabooth.com');
@@ -74,7 +76,7 @@ async function submit(kind,{ok=true,inquiryStatus='CREATED_LEAD',valid=true}={})
  return window.dataLayer.filter(x=>x[0]==='event');
 }
 for(const form of ['booking','contact']) test(form+' emits a conversion only after a newly created lead, never validation/fetch failures or duplicates',async()=>{
- assert.equal((await submit(form)).length,1);
+ assert.equal((await submit(form)).length,2);
  assert.equal((await submit(form,{ok:false})).length,0);
  assert.equal((await submit(form,{inquiryStatus:'UPDATED_LEAD'})).length,0);
  assert.equal((await submit(form,{valid:false})).length,0);
