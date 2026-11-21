@@ -1,3 +1,10 @@
+## 1.4.2 — Google Ads attribution for existing website forms
+
+- Preserve Google click IDs across page navigation and include them in contact and quote-form submissions.
+- Keep UTM and click identifiers from one tagged visit together; replace stale attribution on a later tagged visit.
+- Store landing and referrer paths without query strings; keep forms usable when browser storage is blocked.
+- Preserve the existing Google Analytics/Ads destinations, inquiry behavior, runtime configuration and unpublished Events/Gallery.
+
 ## 1.4.1 — Analytics inquiry and experience reporting
 
 - Record GA4 generate_lead only for newly created successful inquiries; retain existing Google Ads conversion behavior and destinations.
