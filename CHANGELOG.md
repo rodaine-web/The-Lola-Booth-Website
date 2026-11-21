@@ -1,3 +1,10 @@
+## 1.4.1 — Analytics inquiry and experience reporting
+
+- Record GA4 generate_lead only for newly created successful inquiries; retain existing Google Ads conversion behavior and destinations.
+- Record allowlisted experience selections without guest contact details or form contents.
+- Preserve production-only tracking; staff, staging, previews and private proposal/payment routes remain excluded.
+- Qualification: staged implementation, tracking privacy/deduplication tests, and website regression suite.
+
 ## 1.4.0 — 2026-11-20
 
 Owner-approved business experience builder: five independently selectable experiences, compatible optional add-ons, Virtual Booth durations and existing quote workflow. Guest benefit panels align within responsive card rows. Internal prices remain private; Celebration booking, production API/configuration, analytics, indexing, and unpublished Events/Gallery are preserved.
