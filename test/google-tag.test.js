@@ -11,16 +11,16 @@ function run(hostname,pathname='/') {
  vm.runInContext(code,context);
  return {window,scripts,context};
 }
-test('production loads one tag and both existing Analytics and new Ads destinations',()=>{
+test('production loads one tag with the requested Ads ID and preserves existing destinations',()=>{
  for(const host of ['thelolabooth.com','www.thelolabooth.com']) {
   const {window,scripts,context}=run(host,'/availability');
   assert.equal(scripts.length,1);
   assert.equal(scripts[0].async,true);
-  assert.equal(scripts[0].src,'https://www.googletagmanager.com/gtag/js?id=G-CJBCQ9FYL1');
-  assert.deepEqual(Array.from(window.dataLayer,x=>Array.from(x).slice(0,2)).filter(x=>x[0]==='config'),[['config','G-CJBCQ9FYL1'],['config','AW-18531982704']]);
+  assert.equal(scripts[0].src,'https://www.googletagmanager.com/gtag/js?id=AW-18449498922');
+  assert.deepEqual(Array.from(window.dataLayer,x=>Array.from(x).slice(0,2)).filter(x=>x[0]==='config'),[['config','G-CJBCQ9FYL1'],['config','AW-18531982704'],['config','AW-18449498922']]);
   vm.runInContext(code,context);
   assert.equal(scripts.length,1);
-  assert.equal(window.dataLayer.length,3);
+  assert.equal(window.dataLayer.length,4);
  }
 });
 test('staging, previews, localhost and staff do not send advertising traffic',()=>{
@@ -54,7 +54,7 @@ test('duplicate, replayed, unknown and failed submissions are not conversions',(
  const {window}=run('www.thelolabooth.com');
  for(const inquiryStatus of ['UPDATED_LEAD','DUPLICATE','REPLAYED',undefined]) window.lolaTrackLeadConversion({inquiryStatus},'random-uuid');
  window.lolaTrackLeadConversion({inquiryStatus:'CREATED_LEAD'},null);
- assert.equal(window.dataLayer.length,3);
+ assert.equal(window.dataLayer.length,4);
 });
 test('analytics failure cannot break customer submission',()=>{
  const {window}=run('www.thelolabooth.com');window.gtag=()=>{throw Error('blocked');};
