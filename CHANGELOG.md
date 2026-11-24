@@ -1,3 +1,9 @@
+## 1.4.3 — 2026-11-23
+
+- Add requested Google Ads destination AW-18449498922 using the existing single shared tag loader.
+- Retain existing Analytics/Ads destinations, conversion labels, production-only guards and private-page exclusions.
+- Qualification: staging and production website regression suites.
+
 ## 1.4.2 — Google Ads attribution for existing website forms
 
 - Preserve Google click IDs across page navigation and include them in contact and quote-form submissions.

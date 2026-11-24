@@ -10,6 +10,7 @@
   window.gtag('js', new Date());
   window.gtag('config', 'G-CJBCQ9FYL1');
   window.gtag('config', 'AW-18531982704');
+  window.gtag('config', 'AW-18449498922');
 
   const reported = new Set();
   window.lolaTrackLeadConversion = (result, submissionId) => {
@@ -35,6 +36,6 @@
 
   const script = document.createElement('script');
   script.async = true;
-  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-CJBCQ9FYL1';
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18449498922';
   document.head.appendChild(script);
 })();
