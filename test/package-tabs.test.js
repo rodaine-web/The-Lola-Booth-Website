@@ -9,7 +9,7 @@ test('each experience renders its own CMS prices, popular card and custom quote'
  for(const key of ['glam','360','mirror','vogue']){
   const slots=new Map(),$=name=>{if(!slots.has(name))slots.set(name,{});return slots.get(name);};
   const packages=['ESSENTIAL','SIGNATURE','LUXE','CUSTOM'].map((tier,i)=>({id:key+i,catalog_key:'STANDARD',tier_key:tier,name:tier,starting_price:599+i*300,most_popular:i===1,pricing_profile:{experience:key,tier,quoteRequired:i===3,featureLabels:['CMS inclusion']}}));
-  vm.runInNewContext(render+';renderPackages();',{$,catalog:{packages},key,money:n=>'$'+n,esc:s=>String(s),URLSearchParams,symbols:{[key]:'camera'},icon:()=>''});
+  vm.runInNewContext(render+';renderPackages();',{$,catalog:{packages},key,money:n=>'$'+n,esc:s=>String(s),URLSearchParams,celebrationHref:p=>'availability.html?packageId='+p.id,symbols:{[key]:'camera'},icon:()=>''});
   const output=$('[data-design-packages]').innerHTML;
   assert.match(output,new RegExp('data-package-key="'+key+':essential"'));assert.match(output,/\$599/);assert.match(output,/MOST POPULAR/);assert.match(output,/Request a Quote/);assert.match(output,/Full package details/);
  }

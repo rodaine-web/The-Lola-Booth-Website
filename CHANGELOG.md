@@ -1,3 +1,10 @@
+## 1.5.0 — 2026-11-24
+
+- Release reviewed Keepsake Station booking and package options, with compact celebration and corporate add-ons.
+- Unify public navigation and footer, use the logo for home navigation, and link the production Keepsakes Shop.
+- Preserve production analytics, runtime configuration, secure document routing, indexing, and unpublished Events/Gallery.
+- WHCC/Gelato checkout and manufacturing remain unavailable pending integration completion.
+
 ## 1.4.3 — 2026-11-23
 
 - Add requested Google Ads destination AW-18449498922 using the existing single shared tag loader.
