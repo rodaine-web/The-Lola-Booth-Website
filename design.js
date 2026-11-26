@@ -3,7 +3,7 @@
  window.lolaVersionedPricingActive=true;
  const $=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)],esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const base=String(window.LOLA_CONFIG?.apiBase||'').replace(/\/$/,'');
- const asset=src=>{if(!src)return '';if(src.startsWith('/assets/')&&!location.pathname.startsWith('/'))return 'assets/'+src.split('/').pop();if(src.startsWith('/api/'))return base+src;try{const u=new URL(src,location.href);return ['http:','https:'].includes(u.protocol)?src:'';}catch{return '';}};
+ const asset=src=>{if(!src)return '';if(src.startsWith('/staging-site/assets/'))return '/assets/'+src.slice('/staging-site/assets/'.length);if(src.startsWith('/api/'))return base+src;try{const u=new URL(src,location.href);return ['http:','https:'].includes(u.protocol)?src:'';}catch{return '';}};
  const icon=name=>`<svg class="icon" aria-hidden="true"><use href="design-icons.svg#${esc(name)}"/></svg>`;
  const keys=['glam','360','mirror','vogue'],names={glam:'The Lola Glam','360':'The Lola 360',mirror:'The Lola Magic Mirror',vogue:'The Lola Vogue'},symbols={glam:'camera','360':'rotate',mirror:'mirror',vogue:'box'};
  const short={glam:'Our signature DSLR photo booth for studio-quality photos and timeless keepsakes.','360':'A cinematic 360° video experience that brings your event to life.',mirror:'An interactive, full-length mirror experience that wows your guests.',vogue:'A fashion-forward, editorial experience inspired by iconic magazine shoots.'};
@@ -19,7 +19,8 @@
  let site=null;
  const identity=x=>keys.find(k=>String(x.slug||x.website_name||x.name||'').toLowerCase().includes(k));
  function picture(src,crop,alt,cls=''){
-  if(crop&&crop.source===src&&[crop.x,crop.y,crop.width,crop.height,crop.sourceWidth].every(Number.isFinite)&&crop.width>0&&crop.height>0)return `<span class="crop-picture ${esc(cls)}" style="--crop-ratio:${crop.width/crop.height};--crop-w:${crop.width};--crop-h:${crop.height};--image-width:${crop.sourceWidth/crop.width*100}%;--image-left:${-crop.x/crop.width*100}%;--image-top:${-crop.y/crop.height*100}%;--image-y:${-crop.y/crop.width*100}"><img src="${esc(asset(src))}" alt="${esc(alt)}" loading="lazy"></span>`;
+  if(crop&&crop.source===src&&/reference-[a-z]+\.jpg$/.test(src)&&[crop.x,crop.y,crop.width,crop.height,crop.sourceWidth].every(Number.isFinite)){const sh=/reference-packages/.test(src)?1024:1536;return `<span class="crop-picture ${esc(cls)}" style="--crop-ratio:${crop.width/crop.height};--crop-w:${crop.width};--crop-h:${crop.height}"><svg role="img" aria-label="${esc(alt)}" viewBox="${crop.x} ${crop.y} ${crop.width} ${crop.height}" style="display:block;width:100%;height:100%"><image href="${esc(asset(src))}" width="${crop.sourceWidth}" height="${sh}"/></svg></span>`;}
+  if(crop&&crop.source===src&&[crop.x,crop.y,crop.width,crop.height,crop.sourceWidth].every(Number.isFinite)&&crop.width>0&&crop.height>0)return `<span class="crop-picture ${esc(cls)}" style="--crop-ratio:${crop.width/crop.height};--crop-w:${crop.width};--crop-h:${crop.height};--image-width:${crop.sourceWidth/crop.width*100}%;--image-left:${-crop.x/crop.width*100}%;--image-top:${-crop.y/crop.height*100}%;--image-y:${-crop.y/crop.width*100}"><img src="${esc(asset(src))}" alt="${esc(alt)}" loading="eager"></span>`;
   return `<img class="normal-picture ${esc(cls)}" src="${esc(asset(src))}" alt="${esc(alt)}" loading="lazy">`;
  }
  window.lolaDesignPicture=picture;

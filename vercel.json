@@ -75,6 +75,10 @@
   },
   "rewrites": [
     {
+      "source": "/staging-site/assets/:path*",
+      "destination": "/assets/:path*"
+    },
+    {
       "source": "/proposal/:token",
       "destination": "/proposal?token=:token"
     },
