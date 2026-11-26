@@ -1,3 +1,10 @@
+## 1.5.1 — 2026-11-26
+
+- Restore CMS image paths to production assets; retain legacy asset URLs.
+- Render reference-image crops with SVG viewports for Safari.
+- Refresh shared image script/style cache keys.
+- Validation: 37 tests passed; corrected homepage checked in native Safari.
+
 ## 1.5.0 — 2026-11-24
 
 - Release reviewed Keepsake Station booking and package options, with compact celebration and corporate add-ons.
